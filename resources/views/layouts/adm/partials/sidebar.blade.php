@@ -32,6 +32,42 @@
                     </a>
                 </li>
 
+                <li class="nav-header">DATA PRODUK</li>
+                <li class="nav-item">
+                    <a href="{{ route('adm.product.brand.index') }}" class="nav-link d-flex align-items-center {{ !empty($sidebar_menu) ? ($sidebar_menu == 'brand' ? 'active' : '') : '' }}">
+                        <i class="nav-icon fas fa-hashtag"></i>
+                        <p>
+                            Merek
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('adm.product.category.index') }}" class="nav-link d-flex align-items-center {{ !empty($sidebar_menu) ? ($sidebar_menu == 'category' ? 'active' : '') : '' }}">
+                        <i class="nav-icon fas fa-tag"></i>
+                        <p>
+                            Kategori
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('adm.product.index') }}" class="nav-link d-flex align-items-center {{ !empty($sidebar_menu) ? ($sidebar_menu == 'product' ? 'active' : '') : '' }}">
+                        <i class="nav-icon fas fa-boxes"></i>
+                        <p>
+                            Produk
+                        </p>
+                    </a>
+                </li>
+
+                <li class="nav-header">DATA MASTER</li>
+                <li class="nav-item">
+                    <a href="{{ route('adm.store.index') }}" class="nav-link d-flex align-items-center {{ !empty($sidebar_menu) ? ($sidebar_menu == 'store' ? 'active' : '') : '' }}">
+                        <i class="nav-icon fas fa-home"></i>
+                        <p>
+                            Toko
+                        </p>
+                    </a>
+                </li>
+
                 <li class="nav-header">MISCELLANEOUS</li>
                 <li class="nav-item">
                     <a href="javascript:void(0)" class="nav-link d-flex align-items-center" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

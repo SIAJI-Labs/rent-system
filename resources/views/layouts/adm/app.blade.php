@@ -143,7 +143,8 @@
         <!-- AdminLTE App -->
         {{-- <script src="{{ asset('assets/adminlte/js/admin-lte.js') }}"></script> --}}
         <script src="{{ mix('assets/adminlte/js/app.js') }}"></script>
-        <script src="{{ mix('assets/adminlte/js/app-custom.js') }}"></script>
+        {{-- <script src="{{ mix('assets/adminlte/js/app-custom.js') }}"></script> --}}
+        <script src="{{ mix('assets/adminlte/js/function.js') }}"></script>
         <!-- Moment JS -->
         <script src="{{ mix('assets/plugins/moment/dist/moment.js') }}"></script>
 

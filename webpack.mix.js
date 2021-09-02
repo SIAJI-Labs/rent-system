@@ -28,7 +28,11 @@ mix.js('resources/js/app.js', 'public/js')
 mix.sass('resources/assets/adminlte/css/app.scss', 'public/assets/adminlte/css').version();
 mix.sass('resources/assets/adminlte/css/app-custom.scss', 'public/assets/adminlte/css').version();
 mix.js('resources/assets/adminlte/js/app.js', 'public/assets/adminlte/js').version();
-mix.js('resources/assets/adminlte/js/app-custom.js', 'public/assets/adminlte/js').version();
+// mix.js('resources/assets/adminlte/js/app-custom.js', 'public/assets/adminlte/js').version();
+// mix.js('resources/assets/adminlte/js/function.js', 'public/assets/adminlte/js').version();
+mix.scripts([
+    'resources/assets/adminlte/js/function.js'
+], 'public/assets/adminlte/js/function.js').version();
 
 /*
  |--------------------------------------------------------------------------

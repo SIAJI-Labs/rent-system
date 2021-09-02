@@ -1,4 +1,8 @@
 @charset "UTF-8";
+.wrapper {
+  background-color: #f3f6f9 !important;
+}
+
 .fade.in {
   opacity: 1 !important;
 }
@@ -40,6 +44,9 @@ mark, .mark {
   height: 100%;
   -o-object-fit: cover;
      object-fit: cover;
+}
+.sidebar .sidebar-form > .nav-header, .sidebar .nav-sidebar > .nav-header {
+  margin-top: 0.5rem;
 }
 
 .select2-container .select2-selection--single .select2-selection__rendered {
