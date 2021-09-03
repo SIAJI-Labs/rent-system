@@ -50,6 +50,7 @@ class StoreController extends Controller
             'address' => ['nullable', 'string'],
             'latitude' => ['nullable', 'string'],
             'longitude' => ['nullable', 'string'],
+            'invoice_prefix' => ['required', 'string', 'max:6', 'unique:'.$this->storeModel->getTable().',invoice_prefix', 'regex:/^[A-Z]+$/'],
             'note' => ['nullable', 'string'],
         ], [
             'name.required' => 'Field Nama Toko wajib diisi!',
@@ -59,6 +60,11 @@ class StoreController extends Controller
             'latitude.string' => 'Nilai pada Field Latitude tidak valid!',
             'longitude.string' => 'Nilai pada Field Longitude tidak valid!',
             'note.string' => 'Nilai pada Field Catatan tidak valid!',
+            'invoice_prefix.required' => 'Field Prefix Invoice wajib diisi!',
+            'invoice_prefix.string' => 'Nilai pada Field Prefix Invoice tidak valid!',
+            'invoice_prefix.max' => 'Nilai pada Field Prefix Invoice melebihi batas jumlah karakter (191)!',
+            'invoice_prefix.unique' => 'Nilai pada Field Prefix Invoice sudah digunakan!',
+            'invoice_prefix.regex' => 'Nilai pada Field Prefix Invoice hanya dapat diisi oleh karakter A-Z!',
         ]);
 
         \DB::transaction(function () use ($request) {
@@ -68,6 +74,7 @@ class StoreController extends Controller
             $data->address = $request->address;
             $data->latitude = $request->latitude;
             $data->longitude = $request->longitude;
+            $data->invoice_prefix = $request->invoice_prefix;
             $data->is_active = true;
             $data->save();
         });
@@ -112,12 +119,14 @@ class StoreController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $data = $this->storeModel->where('uuid', $id)->firstOrFail();
         $request->validate([
             'name' => ['required', 'string', 'max:191'],
             'address' => ['nullable', 'string'],
             'latitude' => ['nullable', 'string'],
             'longitude' => ['nullable', 'string'],
             'note' => ['nullable', 'string'],
+            'invoice_prefix' => ['required', 'string', 'max:6', 'unique:'.$this->storeModel->getTable().',invoice_prefix,'.$data->id, 'regex:/^[A-Z]+$/'],
         ], [
             'name.required' => 'Field Nama Toko wajib diisi!',
             'name.string' => 'Nilai pada Field Nama Toko tidak valid!',
@@ -126,15 +135,20 @@ class StoreController extends Controller
             'latitude.string' => 'Nilai pada Field Latitude tidak valid!',
             'longitude.string' => 'Nilai pada Field Longitude tidak valid!',
             'note.string' => 'Nilai pada Field Catatan tidak valid!',
+            'invoice_prefix.required' => 'Field Prefix Invoice wajib diisi!',
+            'invoice_prefix.string' => 'Nilai pada Field Prefix Invoice tidak valid!',
+            'invoice_prefix.max' => 'Nilai pada Field Prefix Invoice melebihi batas jumlah karakter (191)!',
+            'invoice_prefix.unique' => 'Nilai pada Field Prefix Invoice sudah digunakan!',
+            'invoice_prefix.regex' => 'Nilai pada Field Prefix Invoice hanya dapat diisi oleh karakter A-Z!',
         ]);
 
-        $data = $this->storeModel->where('uuid', $id)->firstOrFail();
         \DB::transaction(function () use ($request, $data) {
             $data->name = $request->name;
             $data->phone = $request->phone ?? null;
             $data->address = $request->address;
             $data->latitude = $request->latitude;
             $data->longitude = $request->longitude;
+            $data->invoice_prefix = $request->invoice_prefix;
             $data->is_active = true;
             $data->save();
         });
@@ -160,7 +174,7 @@ class StoreController extends Controller
      * Datatable data from storage
      * 
      * @param Request $request
-     * @return 
+     * @return \Illuminate\Http\Response
      */
     public function datatableAll(Request $request)
     {
@@ -176,7 +190,7 @@ class StoreController extends Controller
      * Select2 data format, from storage
      * 
      * @param Request $request
-     * @return json
+     * @return Json
      */
     public function select2(Request $request)
     {

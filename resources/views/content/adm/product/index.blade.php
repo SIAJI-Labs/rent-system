@@ -93,15 +93,15 @@
                     "targets": [0, 1],
                     "searchable": false,
                     "orderable": false,
-                }, {
+            }, {
                     "targets": 0,
                     "render": (row, type, data) => {
-                        return !jQuery.isEmptyObject(data.category) ? `<a href="{{ route('adm.product.category.index') }}/${data.category.uuid}">${row}</a>` : '-';
+                        return !jQuery.isEmptyObject(data.category) ? `<a href="{{ route('adm.product.category.index') }}/${data.category.uuid}">${data.category.name}</a>` : '-';
                     }
                 }, {
                     "targets": 1,
                     "render": (row, type, data) => {
-                        return !jQuery.isEmptyObject(data.brand) ? `<a href="{{ route('adm.product.brand.index') }}/${data.brand.uuid}">${row}</a>` : '-';
+                        return !jQuery.isEmptyObject(data.brand) ? `<a href="{{ route('adm.product.brand.index') }}/${data.brand.uuid}">${data.brand.name}</a>` : '-';
                     }
                 }, {
                     "targets": 3,

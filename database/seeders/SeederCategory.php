@@ -20,11 +20,10 @@ class SeederCategory extends Seeder
         Schema::enableForeignKeyConstraints();
 
         $category = [
-            'Kamera DSLR',
-            'Webcam',
-            'Lensa',
-            'Tripod',
-            'Stabilizer'
+            'Monitor',
+            'Mechanical Keyboard',
+            'Kursi Gaming',
+            'Mouse'
         ];
         foreach($category as $item){
             Category::create([

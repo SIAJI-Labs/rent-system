@@ -21,6 +21,7 @@ class Store extends Model
         'note',
         'longitude',
         'latitude',
+        'invoice_prefix',
         'is_active'
     ];
 
@@ -60,6 +61,10 @@ class Store extends Model
     public function productDetail()
     {
         return $this->hasMany(\App\Models\ProductDetail::class, 'store_id');
+    }
+    public function transaction()
+    {
+        return $this->hasMany(\App\Models\Transaction::class, 'store_id');
     }
 
     /**

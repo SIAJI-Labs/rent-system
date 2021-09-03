@@ -86,6 +86,12 @@
                     "targets": "_all",
                     "className": "align-middle"
                 }, {
+                    "targets": 0,
+                    "searchable": false,
+                    "render": (row, type, data) => {
+                        return `[${data.invoice_prefix}] ${row}`;
+                    }
+                }, {
                     "targets": 1,
                     "searchable": false,
                     "render": (row, type, data) => {

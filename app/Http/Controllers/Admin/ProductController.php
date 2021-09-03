@@ -184,7 +184,7 @@ class ProductController extends Controller
      * Datatable data from storage
      * 
      * @param Request $request
-     * @return 
+     * @return \Illuminate\Http\Response
      */
     public function datatableAll(Request $request)
     {
@@ -201,5 +201,47 @@ class ProductController extends Controller
         return datatables()
             ->of($data->with('category', 'brand'))
             ->toJson();
+    }
+
+    /**
+     * Select2 data format, from storage
+     * 
+     * @param Request $request
+     * @return Json
+     */
+    public function select2(Request $request)
+    {
+        $data = $this->productModel->query()
+            ->select($this->productModel->getTable().'.*');
+            // ->where('is_active', true);
+        $last_page = null;
+        if($request->has('search') && $request->search != ''){
+            // Apply search param
+            $data = $data->where('name', 'like', '%'.$request->search.'%');
+        }
+
+        if($request->has('store_id') && $request->store_id != ''){
+            $data = $data->whereHas('productDetail', function($q) use ($request){
+                return $q->where('store_id', $request->store_id);
+            });
+        }
+
+        if($request->has('page')){
+            // If request has page parameter, add paginate to eloquent
+            $data->paginate(10);
+            // Get last page
+            $last_page = $data->paginate(10)->lastPage();
+        }
+        $data->orderBy('name', 'asc');
+
+        return response()->json([
+            'message' => 'Data Fetched',
+            'data' => $data->get()->each(function($data){
+                $data->makeVisible('id');
+            }),
+            'extra_data' => [
+                'last_page' => $last_page,
+            ]
+        ]);
     }
 }

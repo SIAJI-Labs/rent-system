@@ -193,7 +193,7 @@ class CategoryController extends Controller
      * Datatable data from storage
      * 
      * @param Request $request
-     * @return 
+     * @return \Illuminate\Http\Response
      */
     public function datatableAll(Request $request)
     {
@@ -209,7 +209,7 @@ class CategoryController extends Controller
      * Select2 data format, from storage
      * 
      * @param Request $request
-     * @return json
+     * @return Json
      */
     public function select2(Request $request)
     {

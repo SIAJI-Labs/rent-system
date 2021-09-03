@@ -46,14 +46,15 @@ mark, .mark {
 }
 .sidebar {
     .user-panel {
-        padding: 0 1rem;
+        // padding: 0 1rem;
+
         .image {
-            width: 35px;
-            height: 35px;
-            padding: 0;
+            // width: 35px;
+            // height: 35px;
+            // padding: 0;
             img {
-                width: 100%;
-                height: 100%;
+                width: 2.5rem;
+                height: auto;
                 object-fit: cover;
             }
         }

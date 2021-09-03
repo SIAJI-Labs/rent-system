@@ -20,13 +20,14 @@ class SeederStore extends Seeder
         Schema::enableForeignKeyConstraints();
 
         $store = [
-            'Condong Catur',
-            'Kotagede',
-            'Taman Siswa'  
+            'Malioboro',
+            'Gedong Kuning',
+            'Pleret'  
         ];
         foreach($store as $item){
             Store::create([
                 'name' => $item,
+                'invoice_prefix' => substr(strtoupper(str_replace(' ', '', $item)), 0, 6),
                 'is_active' => true
             ]);
         }

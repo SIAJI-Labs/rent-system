@@ -25,6 +25,30 @@ Route::group([
     Route::group([
         'middleware' => ['web', 'auth:admin']
     ], function(){
+        // Get Protected Image
+        Route::get('protected-image/{type}/{filename}', function($type, $filename){
+            $path = null;
+            switch($type){
+                case 'customer':
+                    $path = 'files/customer';
+                    break;
+            }
+
+            $path .= '/'.$filename;
+            if(\Storage::exists($path)){
+                $type = pathinfo($path, PATHINFO_EXTENSION);
+                // $image = $base64 = 'data:image/' . $type . ';base64,' . base64_encode(\Storage::get($real_path));
+                header('Content-Type: image/'.$type);
+                return \Storage::get($path);
+            }
+            
+            return response()->json([
+                'status' => false,
+                'message' => 'Maaf, anda tidak memiliki ijin untuk mengakses data terkait'
+            ]);
+        })->name('protected.images');
+
+        // Home / Dashboard
         Route::get('/', 'HomeController')->name('index');
 
         Route::group([
@@ -45,12 +69,23 @@ Route::group([
 
         // Store
         Route::resource('store', \StoreController::class);
+        // Customer
+        Route::resource('customer', \CustomerController::class);
 
-        // JSON
+        // Transaction
+        Route::resource('transaction', \TransactionController::class);
+
+        /**
+         * Json Data
+         * 
+         */
         Route::group([
             'prefix' => 'json',
             'as' => 'json.'
         ], function(){
+            Route::get('transaction/{transactionId}/item', [\App\Http\Controllers\Admin\TransactionItemController::class, 'jsonIndex'])->name('transaction.item.index');
+            Route::get('transaction/{transactionId}/item/{id}', [\App\Http\Controllers\Admin\TransactionItemController::class, 'jsonShow'])->name('transaction.item.show');
+
             // Select2
             Route::group([
                 'prefix' => 'select2',
@@ -64,10 +99,16 @@ Route::group([
                     Route::get('brand', [\App\Http\Controllers\Admin\BrandController::class, 'select2'])->name('brand.all');
                     // Product - Category
                     Route::get('category', [\App\Http\Controllers\Admin\CategoryController::class, 'select2'])->name('category.all');
+                    // Product - SN
+                    Route::get('serial-number', [\App\Http\Controllers\Admin\ProductDetailController::class, 'select2'])->name('serial-number.all');
                 });
+                // Produk
+                Route::get('product', [\App\Http\Controllers\Admin\ProductController::class, 'select2'])->name('product.all');
 
                 // Toko
                 Route::get('store', [\App\Http\Controllers\Admin\StoreController::class, 'select2'])->name('store.all');
+                // Kostumer
+                Route::get('customer', [\App\Http\Controllers\Admin\CustomerController::class, 'select2'])->name('customer.all');
             });
 
             // Datatable
@@ -90,6 +131,13 @@ Route::group([
 
                 // Store
                 Route::get('store', [\App\Http\Controllers\Admin\StoreController::class, 'datatableAll'])->name('store.all');
+                // Customer
+                Route::get('customer', [\App\Http\Controllers\Admin\CustomerController::class, 'datatableAll'])->name('customer.all');
+
+                // Transaction Item
+                Route::get('transaction/{transactionId}/item', [\App\Http\Controllers\Admin\TransactionItemController::class, 'datatableAll'])->name('transaction.item.all');
+                // Transaction
+                Route::get('transaction', [\App\Http\Controllers\Admin\TransactionController::class, 'datatableAll'])->name('transaction.all');
             });
         });
     });

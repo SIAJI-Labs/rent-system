@@ -146,7 +146,7 @@ class ProductDetailController extends Controller
      * Datatable data from storage
      * 
      * @param Request $request
-     * @return 
+     * @return \Illuminate\Http\Response
      */
     public function datatableAll(Request $request, $product_id)
     {
@@ -164,5 +164,101 @@ class ProductDetailController extends Controller
         return datatables()
             ->of($data->with('store'))
             ->toJson();
+    }
+
+    /**
+     * Select2 data format, from storage
+     * 
+     * @param Request $request
+     * @return Json
+     */
+    public function select2(Request $request)
+    {
+        $data = $this->productDetailModel->query()
+            ->select($this->productDetailModel->getTable().'.*');
+        $last_page = null;
+        if($request->has('search') && $request->search != ''){
+            // Apply search param
+            $data = $data->where('serial_number', 'like', '%'.$request->search.'%');
+        }
+
+        if($request->has('product_id') && $request->product_id != ''){
+            $data = $data->where('product_id', $request->product_id);
+        }
+        if($request->has('store_id') && $request->store_id != ''){
+            $data = $data->where('store_id', $request->store_id);
+        }
+        if($request->has('store_id') && $request->store_id != '' && $request->has('daterange') && $request->daterange != ''){
+            $data = $data->whereDoesntHave('transactionItem', function($q) use ($request){                
+                return $q->whereHas('transaction', function($q) use ($request){
+                    if($request->has('transaction_id') && $request->transaction_id != ''){
+                        $q->where('transaction_id', '!=', $request->transaction_id);
+                    }
+                    
+                    return $q->where('store_id', $request->store_id)
+                        ->whereIn('status', ['process', 'booking'])
+                        ->where(function($q) use ($request){
+                            $startDate = date("Y-m-d H:i:00", strtotime(explode('-', $request->daterange)[0]));
+                            $endDate = date("Y-m-d H:i:00", strtotime(explode('-', $request->daterange)[1]));
+
+                            return $q->where(function($q) use ($startDate, $endDate){
+                                /**
+                                 * Start Date: 2021-09-14
+                                 * End Date: 2021-09-16
+                                 * 
+                                 * Rent Case 2021-09-15 ~ 2021-09-17
+                                 */
+                                return $q->where('start_date', '>=', $startDate)
+                                    ->where('start_date', '<=', $endDate);
+                            })->orWhere(function($q) use ($startDate, $endDate){
+                                /**
+                                 * Start Date: 2021-09-14
+                                 * End Date: 2021-09-16
+                                 * 
+                                 * Rent Case 2021-09-13 ~ 2021-09-15
+                                 */
+                                return $q->where('end_date', '>=', $startDate)
+                                    ->where('end_date', '<=', $endDate);
+                            })->orWhere(function($q) use ($startDate, $endDate){
+                                /**
+                                 * Start Date: 2021-09-12
+                                 * End Date: 2021-09-16
+                                 * 
+                                 * Rent Case 2021-09-13 ~ 2021-09-15
+                                 */
+                                return $q->where('start_date', '<=', $startDate)
+                                    ->where('end_date', '>=', $endDate);
+                            })->orWhere(function($q) use ($startDate, $endDate){
+                                /**
+                                 * Start Date: 2021-09-14
+                                 * End Date: 2021-09-14
+                                 * 
+                                 * Rent Case 2021-09-13 ~ 2021-09-15
+                                 */
+                                return $q->where('start_date', '>=', $startDate)
+                                    ->where('end_date', '<=', $endDate);
+                            });
+                        });
+                });
+            });
+        }
+
+        if($request->has('page')){
+            // If request has page parameter, add paginate to eloquent
+            $data->paginate(10);
+            // Get last page
+            $last_page = $data->paginate(10)->lastPage();
+        }
+        $data->orderBy('created_at', 'asc');
+
+        return response()->json([
+            'message' => 'Data Fetched',
+            'data' => $data->get()->each(function($data){
+                $data->makeVisible('id');
+            }),
+            'extra_data' => [
+                'last_page' => $last_page,
+            ]
+        ]);
     }
 }

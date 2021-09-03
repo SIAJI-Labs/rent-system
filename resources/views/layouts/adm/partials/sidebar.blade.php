@@ -9,10 +9,10 @@
     <div class="sidebar">
         <!-- Sidebar user (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-            <div class="image mr-3">
+            <div class="image">
                 <img src="{{ getAvatar(\Auth::guard('admin')->user()->name) }}" class="img-circle elevation-2" alt="User Avatar">
             </div>
-            <div class="mt-1 mb-1">
+            <div class="info">
                 <a href="#" class="{{ !empty($sidebar_menu) ? ($sidebar_menu == 'profile' ? 'active' : '') : '' }}">
                     {{ Auth::user()->name }}
                 </a>
@@ -58,12 +58,30 @@
                     </a>
                 </li>
 
+                <li class="nav-header">DATA TRANSAKSI</li>
+                <li class="nav-item">
+                    <a href="{{ route('adm.transaction.index') }}" class="nav-link d-flex align-items-center {{ !empty($sidebar_menu) ? ($sidebar_menu == 'transaction' ? 'active' : '') : '' }}">
+                        <i class="nav-icon fas fa-money-bill"></i>
+                        <p>
+                            Transaksi
+                        </p>
+                    </a>
+                </li>
+
                 <li class="nav-header">DATA MASTER</li>
                 <li class="nav-item">
                     <a href="{{ route('adm.store.index') }}" class="nav-link d-flex align-items-center {{ !empty($sidebar_menu) ? ($sidebar_menu == 'store' ? 'active' : '') : '' }}">
                         <i class="nav-icon fas fa-home"></i>
                         <p>
                             Toko
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('adm.customer.index') }}" class="nav-link d-flex align-items-center {{ !empty($sidebar_menu) ? ($sidebar_menu == 'customer' ? 'active' : '') : '' }}">
+                        <i class="nav-icon fas fa-users"></i>
+                        <p>
+                            Kostumer
                         </p>
                     </a>
                 </li>

@@ -63,6 +63,10 @@ class Product extends Model
     {
         return $this->hasMany(\App\Models\ProductDetail::class, 'product_id');
     }
+    public function transactionItem()
+    {
+        return $this->hasMany(\App\Models\TransactionItem::class, 'product_id');
+    }
 
     /**
      * Foreign Key Relation

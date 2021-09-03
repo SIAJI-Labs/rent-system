@@ -52,7 +52,7 @@
         @yield('css_plugins')
 		@yield('css_inline')
     </head>
-	<body class="hold-transition sidebar-mini layout-fixed">
+	<body class="hold-transition sidebar-mini layout-fixed {{ $wbody_class ?? '' }}">
 		<!-- Site wrapper -->
 		<div class="wrapper">
 			@include('layouts.adm.partials.navbar')
@@ -60,7 +60,7 @@
 
             <!-- Preloader -->
             <div class="preloader flex-column justify-content-center align-items-center">
-                <img src="{{ getAvatar(($wtitle ?? 'SIABAS'), 'gridy') }}" alt="Preloader" height="60" width="60">
+                <img src="{{ getAvatar(($wtitle ?? env('APP_NAME')), 'gridy') }}" alt="Preloader" height="60" width="60">
             </div>
 
 			<!-- Content Wrapper. Contains page content -->
@@ -70,7 +70,7 @@
                     <div class="alert alert-progress alert-info fade show mb-0" role="alert" id="progress-alert" style="display:none;border:unset;border-radius:0;">
                         <div class="d-flex align-items-center">
                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                            <span class="ml-2">Please wait, process is running...</span>
+                            <span class="ml-2">Mohon bersabar, ada proses yang sedang berjalan...</span>
                         </div>
                     </div>
                 </div>
@@ -172,9 +172,9 @@
                                 class: 'bg-warning ajax-toast m-3', 
                                 title: 'Processing',
                                 close: false,
-                                body: 'Please wait a bit, data process is running.'
+                                body: 'Mohon bersabar, ada proses yang sedang berjalan...'
                             });
-                        }, 1000);
+                        }, 750);
                     }
                     // console.log(ajax_timer);
                 },
@@ -194,35 +194,31 @@
                     // console.log("Ajax Fail Global");
                     // console.log(jqXHR);
 
-                    let error = jqXHR.responseJSON.errors;
-                    if(error['csrf']){
-                        Swal.fire({
-                            title: error['csrf'],
-                            text: "Please refresh this page!",
-                            icon: 'warning',
-                            showCancelButton: true,
-                            confirmButtonText: 'Refresh Page!',
-                            cancelButtonText: 'Close!',
-                            reverseButtons: true,
-                        }).then((result) => {
-                            if (result.value) {
-                                Swal.fire({
-                                    title: "This page will be refreshed!",
-                                    text: "All unsaved data will be discarded!",
-                                    icon: 'warning',
-                                    showCancelButton: true,
-                                    confirmButtonText: 'Refresh Page!',
-                                    cancelButtonText: 'Close!',
-                                    reverseButtons: true,
-                                }).then((result) => {
-                                    if (result.value) {
-                                        location.reload();
-                                    }
-                                });
-                            }
-                        });
-                        // console.log("Kesalahan CSRF, mohon segarkan halaman");
-                    }
+                    Swal.fire({
+                        title: "Ada sesuatu yang bermasalah",
+                        text: "Mohon hubungi admin jika error ini terjadi berulang!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Segarkan Halaman!',
+                        cancelButtonText: 'Tutup!',
+                        reverseButtons: true,
+                    }).then((result) => {
+                        if (result.value) {
+                            Swal.fire({
+                                title: "Halaman ini akan disegarkan!",
+                                text: "Semua data yang belum disimpan akan diabaikan!",
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonText: 'Segarkan Halaman!',
+                                cancelButtonText: 'Tutup!',
+                                reverseButtons: true,
+                            }).then((result) => {
+                                if (result.value) {
+                                    location.reload();
+                                }
+                            });
+                        }
+                    });
                 },
             });
             

@@ -60,6 +60,14 @@ class User extends Authenticatable
      * 
      * @return model
      */
+    public function transaction()
+    {
+        return $this->hasMany(\App\Models\Transaction::class, 'user_id');
+    }
+    public function transactionLog()
+    {
+        return $this->hasMany(\App\Models\TransactionLog::class, 'user_id');
+    }
 
     /**
      * Foreign Key Relation

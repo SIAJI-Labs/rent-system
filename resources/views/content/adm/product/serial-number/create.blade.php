@@ -97,168 +97,168 @@
 @endsection
 
 @section('js_inline')
-    <script>
-        $(document).ready((e) => {
-            let select2_query = {};
-            $(".form-select2").select2({
-                theme: 'bootstrap4',
-                allowClear: true,
-            });
-            $("#input-store_id").select2({
-                placeholder: 'Cari Toko',
-                theme: 'bootstrap4',
-                allowClear: true,
-                ajax: {
-                    url: "{{ route('adm.json.select2.store.all') }}",
-                    delay: 250,
-                    data: function (params) {
-                        var query = {
-                            search: params.term,
-                            page: params.page || 1
+<script>
+    $(document).ready((e) => {
+        let select2_query = {};
+        $(".form-select2").select2({
+            theme: 'bootstrap4',
+            allowClear: true,
+        });
+        $("#input-store_id").select2({
+            placeholder: 'Cari Toko',
+            theme: 'bootstrap4',
+            allowClear: true,
+            ajax: {
+                url: "{{ route('adm.json.select2.store.all') }}",
+                delay: 250,
+                data: function (params) {
+                    var query = {
+                        search: params.term,
+                        page: params.page || 1
+                    }
+
+                    // Query parameters will be ?search=[term]&type=public
+                    return query;
+                },
+                processResults: function (data, params) {
+                    var items = $.map(data.data, function(obj){
+                        obj.id = obj.id;
+                        obj.text = obj.name;
+
+                        return obj;
+                    });
+                    params.page = params.page || 1;
+
+                    // Transforms the top-level key of the response object from 'items' to 'results'
+                    return {
+                        results: items,
+                        pagination: {
+                            more: params.page < data.last_page
                         }
-
-                        // Query parameters will be ?search=[term]&type=public
-                        return query;
-                    },
-                    processResults: function (data, params) {
-                        var items = $.map(data.data, function(obj){
-                            obj.id = obj.id;
-                            obj.text = obj.name;
-
-                            return obj;
-                        });
-                        params.page = params.page || 1;
-
-                        // Transforms the top-level key of the response object from 'items' to 'results'
-                        return {
-                            results: items,
-                            pagination: {
-                                more: params.page < data.last_page
-                            }
-                        };
-                    },
+                    };
                 },
-                templateResult: function (item) {
-                    // console.log(item);
-                    // No need to template the searching text
-                    if (item.loading) {
-                        return item.text;
-                    }
-                    
-                    var term = select2_query.term || '';
-                    var $result = markMatch(item.text, term);
-
-                    return $result;
-                },
-                language: {
-                    searching: function (params) {
-                        // Intercept the query as it is happening
-                        select2_query = params;
-                        
-                        // Change this to be appropriate for your application
-                        return 'Searching...';
-                    }
+            },
+            templateResult: function (item) {
+                // console.log(item);
+                // No need to template the searching text
+                if (item.loading) {
+                    return item.text;
                 }
-            });
-        });
-
-        $("#input-store_id").change((e) => {
-            let select_data = $(e.target).select2('data');
-            let data_id = '';
-            let data_text = '';
-
-            if(!(jQuery.isEmptyObject(select_data))){
-                data_id = select_data[0].id;
-                data_text = select_data[0].text;
-            } 
-
-            $("#input-old_store_id").val(data_id);
-            $("#input-old_store_id_text").val(data_text);
-        });
-
-        // CKEditor
-        const watchdog = new CKSource.EditorWatchdog();
-        window.watchdog = watchdog;
-        watchdog.setCreator( ( element, config ) => {
-            return CKSource.Editor
-                .create( element, config )
-                .then( editor => {
-                    return editor;
-                });
-        } );
-        watchdog.setDestructor( editor => {
-            return editor.destroy();
-        });
-        watchdog.on( 'error', handleError );
-        watchdog
-            .create( document.querySelector( '.ckeditor' ), {
-                removePlugins: [ 'Title', 'Base64UploadAdapter' ],
-                toolbar: {
-                    items: [
-                        'heading',
-                        '|',
-                        'undo',
-                        'redo',
-                        '|',
-                        'alignment',
-                        'numberedList',
-                        'bulletedList',
-                        'indent',
-                        'outdent',
-                        'fontSize',
-                        '|',
-                        'bold',
-                        'italic',
-                        'underline',
-                        'strikethrough',
-                        'subscript',
-                        'superscript',
-                        '|',
-                        'fontBackgroundColor',
-                        'fontColor',
-                        'fontFamily',
-                        'highlight',
-                        '|',
-                        'blockQuote',
-                        // 'imageInsert',
-                        'codeBlock',
-                        'insertTable',
-                        'mediaEmbed',
-                        '|',
-                        'findAndReplace',
-                        'sourceEditing',
-                        'removeFormat'
-                    ]
-                },
-                language: 'en',
-                image: {
-                    toolbar: [
-                        'toggleImageCaption',
-                        'imageTextAlternative',
-                        'imageStyle:inline',
-                        'imageStyle:block',
-                        'imageStyle:side',
-                        'linkImage',
-                        'ImageResize'
-                    ]
-                },
-                table: {
-                    contentToolbar: [
-                        'tableColumn',
-                        'tableRow',
-                        'mergeTableCells',
-                        'tableCellProperties',
-                        'tableProperties'
-                    ]
-                },
-            } )
-            .catch( handleError );
                 
-        function handleError( error ){
-            console.error( 'Oops, something went wrong!' );
-            console.error( 'Please, report the following error on https://github.com/ckeditor/ckeditor5/issues with the build id and the error stack trace:' );
-            console.warn( 'Build id: 2m8xt6rsww6w-na9hyagnqswh' );
-            console.error( error );
-        }
-    </script>
+                var term = select2_query.term || '';
+                var $result = markMatch(item.text, term);
+
+                return $result;
+            },
+            language: {
+                searching: function (params) {
+                    // Intercept the query as it is happening
+                    select2_query = params;
+                    
+                    // Change this to be appropriate for your application
+                    return 'Searching...';
+                }
+            }
+        });
+    });
+
+    $("#input-store_id").change((e) => {
+        let select_data = $(e.target).select2('data');
+        let data_id = '';
+        let data_text = '';
+
+        if(!(jQuery.isEmptyObject(select_data))){
+            data_id = select_data[0].id;
+            data_text = select_data[0].text;
+        } 
+
+        $("#input-old_store_id").val(data_id);
+        $("#input-old_store_id_text").val(data_text);
+    });
+
+    // CKEditor
+    const watchdog = new CKSource.EditorWatchdog();
+    window.watchdog = watchdog;
+    watchdog.setCreator( ( element, config ) => {
+        return CKSource.Editor
+            .create( element, config )
+            .then( editor => {
+                return editor;
+            });
+    } );
+    watchdog.setDestructor( editor => {
+        return editor.destroy();
+    });
+    watchdog.on( 'error', handleError );
+    watchdog
+        .create( document.querySelector( '.ckeditor' ), {
+            removePlugins: [ 'Title', 'Base64UploadAdapter' ],
+            toolbar: {
+                items: [
+                    'heading',
+                    '|',
+                    'undo',
+                    'redo',
+                    '|',
+                    'alignment',
+                    'numberedList',
+                    'bulletedList',
+                    'indent',
+                    'outdent',
+                    'fontSize',
+                    '|',
+                    'bold',
+                    'italic',
+                    'underline',
+                    'strikethrough',
+                    'subscript',
+                    'superscript',
+                    '|',
+                    'fontBackgroundColor',
+                    'fontColor',
+                    'fontFamily',
+                    'highlight',
+                    '|',
+                    'blockQuote',
+                    // 'imageInsert',
+                    'codeBlock',
+                    'insertTable',
+                    'mediaEmbed',
+                    '|',
+                    'findAndReplace',
+                    'sourceEditing',
+                    'removeFormat'
+                ]
+            },
+            language: 'en',
+            image: {
+                toolbar: [
+                    'toggleImageCaption',
+                    'imageTextAlternative',
+                    'imageStyle:inline',
+                    'imageStyle:block',
+                    'imageStyle:side',
+                    'linkImage',
+                    'ImageResize'
+                ]
+            },
+            table: {
+                contentToolbar: [
+                    'tableColumn',
+                    'tableRow',
+                    'mergeTableCells',
+                    'tableCellProperties',
+                    'tableProperties'
+                ]
+            },
+        } )
+        .catch( handleError );
+            
+    function handleError( error ){
+        console.error( 'Oops, something went wrong!' );
+        console.error( 'Please, report the following error on https://github.com/ckeditor/ckeditor5/issues with the build id and the error stack trace:' );
+        console.warn( 'Build id: 2m8xt6rsww6w-na9hyagnqswh' );
+        console.error( error );
+    }
+</script>
 @endsection

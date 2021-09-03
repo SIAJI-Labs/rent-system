@@ -140,7 +140,7 @@ class BrandController extends Controller
      * Datatable data format, from storage
      * 
      * @param Request $request
-     * @return json
+     * @return \Illuminate\Http\Response
      */
     public function datatableAll(Request $request)
     {
@@ -156,7 +156,7 @@ class BrandController extends Controller
      * Select2 data format, from storage
      * 
      * @param Request $request
-     * @return json
+     * @return Json
      */
     public function select2(Request $request)
     {

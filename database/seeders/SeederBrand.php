@@ -20,10 +20,11 @@ class SeederBrand extends Seeder
         Schema::enableForeignKeyConstraints();
 
         $category = [
-            'Xiaomi',
-            'Mijia',
-            'Canon',
-            'Nikon'
+            'Logitech',
+            'Benq',
+            'AOC',
+            'Fantech',
+            'Secret Lab'
         ];
         foreach($category as $item){
             Brand::create([

@@ -71,6 +71,17 @@
         </div>
 
         <div class="form-group">
+            <label>Prefix Invoice</label>
+            <input type="text" class="form-control @error('invoice_prefix') is-invalid @enderror" placeholder="Prefix Invoice" name="invoice_prefix" id="input-invoice_prefix" value="{{ $data->invoice_prefix }}" required>
+            @error('invoice_prefix')
+            <span class="text-invalid">{{ $message }}</span>
+            @enderror
+            
+            <small class="text-muted d-block">*Karakter diijinkan: A-Z, Maksimal 6 karakter</small>
+            <small class="text-muted d-block">**Digunakan untuk struktur invoice transaksi (Misal: INVC/{{ date("Ymd") }}/PREFIX/1630592268</small>
+        </div>
+
+        <div class="form-group">
             <label>Catatan</label>
             <textarea class="ckeditor d-none @error('note') is-invalid @enderror" name="note" id="input-note" placeholder="Catatan mengenai Toko akan berada disini...">{!! $data->note !!}</textarea>
             @error('note')

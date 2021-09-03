@@ -55,6 +55,10 @@ class ProductDetail extends Model
      * 
      * @return model
      */
+    public function transactionItem()
+    {
+        return $this->hasMany(\App\Models\TransactionItem::class, 'product_detail_id');
+    }
 
     /**
      * Foreign Key Relation
