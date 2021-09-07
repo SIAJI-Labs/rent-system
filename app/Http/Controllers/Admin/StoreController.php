@@ -75,6 +75,8 @@ class StoreController extends Controller
             $data->latitude = $request->latitude;
             $data->longitude = $request->longitude;
             $data->invoice_prefix = $request->invoice_prefix;
+            $data->chart_hex_color = $request->chart_color;
+            $data->chart_rgb_color = convertHexToRgb($request->chart_color);
             $data->is_active = true;
             $data->save();
         });
@@ -149,6 +151,8 @@ class StoreController extends Controller
             $data->latitude = $request->latitude;
             $data->longitude = $request->longitude;
             $data->invoice_prefix = $request->invoice_prefix;
+            $data->chart_hex_color = $request->chart_color;
+            $data->chart_rgb_color = convertHexToRgb($request->chart_color);
             $data->is_active = true;
             $data->save();
         });

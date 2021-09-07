@@ -67,6 +67,14 @@
                         </p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('adm.accounting.yearly') }}" class="nav-link d-flex align-items-center {{ !empty($sidebar_menu) ? ($sidebar_menu == 'accounting' ? 'active' : '') : '' }}">
+                        <i class="nav-icon fas fa-chart-bar"></i>
+                        <p>
+                            Keuangan
+                        </p>
+                    </a>
+                </li>
 
                 <li class="nav-header">DATA MASTER</li>
                 <li class="nav-item">

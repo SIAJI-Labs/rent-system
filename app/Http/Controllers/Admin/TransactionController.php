@@ -10,6 +10,7 @@ class TransactionController extends Controller
     private $storeModel;
     private $productModel;
     private $customerModel;
+    private $accountingModel;
     private $transactionModel;
     private $productDetailModel;
     private $transactionLogModel;
@@ -24,6 +25,7 @@ class TransactionController extends Controller
         $this->storeModel = new \App\Models\Store();
         $this->productModel = new \App\Models\Product();
         $this->customerModel = new \App\Models\Customer();
+        $this->accountingModel = new \App\Models\Accounting();
         $this->transactionModel = new \App\Models\Transaction();
         $this->productDetailModel = new \App\Models\ProductDetail();
         $this->transactionLogModel = new \App\Models\TransactionLog();
@@ -78,7 +80,7 @@ class TransactionController extends Controller
             'store_id' => ['required', 'string', 'exists:'.$this->storeModel->getTable().',id'],
             'customer_id' => ['required', 'string', 'exists:'.$this->customerModel->getTable().',id'],
             'daterange' => ['required', 'string'],
-            'type' => ['required', 'string', 'in:normal,booking'],
+            'status' => ['required', 'string', 'in:process,booking,complete,cancel'],
             'note' => ['nullable', 'string'],
             'product.*.product_id' => ['required', 'string', 'exists:'.$this->productModel->getTable().',id'],
             'product.*.sn_id' => ['required', 'string', 'exists:'.$this->productDetailModel->getTable().',id', 'distinct'],
@@ -113,32 +115,14 @@ class TransactionController extends Controller
             'product.*.note.string' => 'Nilai pada Field Catatan Produk tidak valid!', 
         ]);
 
+        // Validate if status is complete
+        if($request->status == "complete" && $request->leftover > 0){
+            return redirect()->back()->withInput()->withErrors([
+                'paid' => ['Data Transaksi tidak dapat disimpan karena transaksi diatur sebagai "Selesai" namun pembayaran belum lunas']
+            ]);
+        }
+
         \DB::transaction(function () use ($request) {
-            $store = $this->storeModel->findOrFail($request->store_id);
-            do {
-                $invoice = generateInvoice($store->invoice_prefix);
-                $check = $this->transactionModel->where('invoice', $invoice)->first();
-            } while($check);
-
-            $data = $this->transactionModel;
-            $data->user_id = \Auth::user()->id;
-            $data->store_id = $request->store_id;
-            $data->customer_id = $request->customer_id;
-            $data->invoice = $invoice;
-            $data->date = date("Y-m-d H:i:s");
-            $data->start_date = date("Y-m-d H:i:00", strtotime(explode('-', $request->daterange)[0]));
-            $data->end_date = date("Y-m-d H:i:00", strtotime(explode('-', $request->daterange)[1]));
-            $data->must_end_date = date("Y-m-d H:i:00", strtotime(explode('-', $request->daterange)[1]));
-            $data->back_date = null;
-            $data->amount = 0;
-            $data->discount = 0;
-            $data->paid = $request->paid;
-            // $data->charge = $request->store_id;
-            $data->extra = $request->extra_amount;
-            $data->status = $request->type == 'normal' ? 'process' : 'booking';
-            $data->note = $request->note;
-            $data->save();
-
             // Product
             $sum_price = 0;
             $sum_discount = 0;
@@ -156,22 +140,54 @@ class TransactionController extends Controller
                 $sum_discount += $product['discount'];
             }
 
+            $store = $this->storeModel->findOrFail($request->store_id);
+            do {
+                $invoice = generateInvoice($store->invoice_prefix);
+                $check = $this->transactionModel->where('invoice', $invoice)->first();
+            } while($check);
+
+            $data = $this->transactionModel;
+            $data->user_id = \Auth::user()->id;
+            $data->store_id = $request->store_id;
+            $data->customer_id = $request->customer_id;
+            $data->invoice = $invoice;
+            $data->date = date("Y-m-d H:i:s");
+            $data->start_date = date("Y-m-d H:i:00", strtotime(explode('-', $request->daterange)[0]));
+            $data->end_date = date("Y-m-d H:i:00", strtotime(explode('-', $request->daterange)[1]));
+            $data->must_end_date = date("Y-m-d H:i:00", strtotime(explode('-', $request->daterange)[1]));
+            $data->back_date = null;
+            $data->amount = ($sum_price * $request->periode);
+            $data->discount = ($sum_discount * $request->periode);
+            $data->paid = $request->paid;
+            // $data->charge = $request->store_id;
+            $data->extra = $request->extra_amount;
+            $data->status = $request->status;
+            $data->note = $request->note;
+            $data->save();
+
             if(!empty($transactionProductArr)){
                 $data->transactionItem()->saveMany($transactionProductArr);
             }
 
-            $data->amount = ($sum_price * $request->periode);
-            $data->discount = ($sum_discount * $request->periode);
-            $data->save();
-
             // Add TransactionLog
-            $data->transactionLog()->saveMany([
-                new \App\Models\TransactionLog([
-                    'user_id' => \Auth::user()->id,
-                    'date' => date("Y-m-d H:i:s"),
-                    'log' => 'User membuat data transaksi via dashboard'
-                ])
+            $transactionLog = $this->transactionLogModel->create([
+                'transaction_id' => $data->id,
+                'user_id' => \Auth::user()->id,
+                'date' => date("Y-m-d H:i:s"),
+                'log' => 'User membuat data transaksi via dashboard'
             ]);
+            // Get Last Audit on Transaction
+            $lastAudit = $data->audits()->get()->last();
+            $lastAudit->extra_type = get_class($transactionLog);
+            $lastAudit->extra_id = $transactionLog->id;
+            $lastAudit->save();
+            // Get Audit on Transaction Item
+            foreach($data->transactionItem as $item){
+                $lastAuditItem = $item->audits()->get()->last();
+                $lastAuditItem->extra_type = get_class($transactionLog);
+                $lastAuditItem->extra_id = $transactionLog->id;
+                $lastAuditItem->save();
+            }
         });
 
         return redirect()->route('adm.transaction.index')->with([
@@ -190,6 +206,11 @@ class TransactionController extends Controller
     {
         $data = $this->transactionModel->where('uuid', $id)
             ->firstOrFail();
+        $diff = $data->audits()->with('user')->get()->last();
+
+        // return response()->json([
+        //     'audit' => $diff->getModified()
+        // ]);
         return view('content.adm.transaction.show', [
             'data' => $data
         ]);
@@ -238,6 +259,7 @@ class TransactionController extends Controller
         $request->validate([
             'daterange' => ['required', 'string'],
             'note' => ['nullable', 'string'],
+            'status' => ['required', 'string', 'in:process,booking,complete,cancel'],
             'product.*.product_id' => ['required', 'string', 'exists:'.$this->productModel->getTable().',id'],
             'product.*.sn_id' => ['required', 'string', 'exists:'.$this->productDetailModel->getTable().',id', 'distinct'],
             'product.*.price' => ['required', 'numeric', 'min:0'],
@@ -262,19 +284,23 @@ class TransactionController extends Controller
             'product.*.note.string' => 'Nilai pada Field Catatan Produk tidak valid!', 
         ]);
 
+        // Validate if status is complete
+        if($request->status == "complete" && $request->leftover > 0){
+            return redirect()->back()->withInput()->withErrors([
+                'paid' => ['Data Transaksi tidak dapat disimpan karena transaksi diatur sebagai "Selesai" namun pembayaran belum lunas']
+            ]);
+        }
+
         $data = $this->transactionModel->where('uuid', $id)
             ->firstOrFail();
         $dbTransaction = \DB::transaction(function () use ($request, $data) {
-            $data->start_date = date("Y-m-d H:i:00", strtotime(explode('-', $request->daterange)[0]));
-            $data->end_date = date("Y-m-d H:i:00", strtotime(explode('-', $request->daterange)[1]));
-            $data->must_end_date = date("Y-m-d H:i:00", strtotime(explode('-', $request->daterange)[1]));
-            $data->amount = 0;
-            $data->discount = 0;
-            $data->paid = $request->paid;
-            // $data->charge = $request->store_id;
-            $data->extra = $request->extra_amount;
-            $data->note = $request->note;
-            $data->save();
+            // Add TransactionLog
+            $transactionLog = $this->transactionLogModel->create([
+                'transaction_id' => $data->id,
+                'user_id' => \Auth::user()->id,
+                'date' => date("Y-m-d H:i:s"),
+                'log' => 'User melakukan perubahan data transaksi via dashboard'
+            ]);
 
             // Product
             $sum_price = 0;
@@ -356,13 +382,22 @@ class TransactionController extends Controller
 
                     $existsOnDb[] = $transactionItem->id;
                 } else {
-                    $transactionProductArr[] = new \App\Models\TransactionItem([
+                    $transactionItem = $this->transactionItemModel->create([
+                        'transaction_id' => $data->id,
                         'product_id' => $product['product_id'],
                         'product_detail_id' => $product['sn_id'],
                         'price' => $product['price'],
                         'discount' => $product['discount'],
                         'note' => $product['note']
                     ]);
+                }
+
+                // Get Last Audit on Transaction Item
+                if($transactionItem->wasChanged()){
+                    $lastAuditItem = $transactionItem->audits()->get()->last();
+                    $lastAuditItem->extra_type = get_class($transactionLog);
+                    $lastAuditItem->extra_id = $transactionLog->id;
+                    $lastAuditItem->save();
                 }
 
                 $sum_price += $product['price'];
@@ -378,9 +413,18 @@ class TransactionController extends Controller
                 throw $errorException;
             }
 
-            if(!empty($transactionProductArr)){
-                $data->transactionItem()->saveMany($transactionProductArr);
-            }
+            $data->start_date = date("Y-m-d H:i:00", strtotime(explode('-', $request->daterange)[0]));
+            $data->end_date = date("Y-m-d H:i:00", strtotime(explode('-', $request->daterange)[1]));
+            $data->must_end_date = date("Y-m-d H:i:00", strtotime(explode('-', $request->daterange)[1]));
+            $data->amount = ($sum_price * $request->periode);
+            $data->discount = ($sum_discount * $request->periode);
+            $data->paid = $request->paid;
+            // $data->charge = $request->store_id;
+            $data->extra = $request->extra_amount;
+            $data->status = $request->status;
+            $data->note = $request->note;
+            $data->save();
+
             // Check if there's delete action
             $checkTransactionItemDelete = $this->transactionItemModel->where('transaction_id', $data->id)
                 ->whereNotIn('id', $existsOnDb)
@@ -391,18 +435,13 @@ class TransactionController extends Controller
                 };
             }
 
-            $data->amount = ($sum_price * $request->periode);
-            $data->discount = ($sum_discount * $request->periode);
-            $data->save();
-
-            // Add TransactionLog
-            $data->transactionLog()->saveMany([
-                new \App\Models\TransactionLog([
-                    'user_id' => \Auth::user()->id,
-                    'date' => date("Y-m-d H:i:s"),
-                    'log' => '<p>User melakukan perubahan data</p><br/><p>Daftar perubahan:</p>'
-                ])
-            ]);
+            // Get Last Audit on Transaction
+            if($data->wasChanged()){
+                $lastAudit = $data->audits()->get()->last();
+                $lastAudit->extra_type = get_class($transactionLog);
+                $lastAudit->extra_id = $transactionLog->id;
+                $lastAudit->save();
+            }
         });
         
         return redirect()->route('adm.transaction.index')->with([
@@ -435,11 +474,34 @@ class TransactionController extends Controller
 
         return datatables()
             ->of($data->with(['customer' => function($q){
-                return $q->select('id', 'name');
+                return $q->select('id', 'uuid', 'name');
             }]))
             ->orderColumn('invoice', function ($query, $order) {
                 $query->orderBy('created_at', $order);
             })
+            ->addColumn('id', function($data){
+                return $data->id;
+            })
+            ->toJson();
+    }
+
+    /**
+     * Datatable data from storage
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function datatableAccounting(Request $request, $id)
+    {
+        $transaction = $this->transactionModel->where('uuid', $id)
+            ->firstOrFail();
+
+        $data = $this->accountingModel->query()
+            ->select($this->accountingModel->getTable().'.*')
+            ->where('transaction_id', $transaction->id);
+
+        return datatables()
+            ->of($data->with('user'))
             ->addColumn('id', function($data){
                 return $data->id;
             })

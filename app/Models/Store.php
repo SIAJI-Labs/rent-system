@@ -22,6 +22,8 @@ class Store extends Model
         'longitude',
         'latitude',
         'invoice_prefix',
+        'chart_hex_color',
+        'chart_rgb_color',
         'is_active'
     ];
 
@@ -65,6 +67,10 @@ class Store extends Model
     public function transaction()
     {
         return $this->hasMany(\App\Models\Transaction::class, 'store_id');
+    }
+    public function accounting()
+    {
+        return $this->hasMany(\App\Models\Accounting::class, 'store_id');
     }
 
     /**

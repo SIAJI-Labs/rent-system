@@ -5,9 +5,27 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Transaction extends Model
+use OwenIt\Auditing\Contracts\Auditable;
+
+class Transaction extends Model implements Auditable
 {
     use HasFactory;
+    use \OwenIt\Auditing\Auditable;
+    /**
+     * Attributes to exclude from the Audit.
+     *
+     * @var array
+     */
+    protected $auditExclude = [
+        'uuid',
+    ];
+    /**
+     * {@inheritdoc}
+     */
+    public function transformAudit(array $data): array
+    {
+        return $data;
+    }
 
     /**
      * The attributes that are mass assignable.
@@ -73,6 +91,10 @@ class Transaction extends Model
     public function transactionItem()
     {
         return $this->hasMany(\App\Models\TransactionItem::class, 'transaction_id');
+    }
+    public function accounting()
+    {
+        return $this->hasMany(\App\Models\Accounting::class, 'transaction_id');
     }
 
     /**

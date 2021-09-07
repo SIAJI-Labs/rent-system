@@ -101,6 +101,13 @@
                         `;
                     }
                 }, {
+                    "targets": 1,
+                    "render": (row, type, data) => {
+                        return `
+                            <a href="{{ route('adm.customer.index') }}/${data.customer.uuid}">${data.customer.name}</a>
+                        `;
+                    }
+                }, {
                     "targets": [2, 3],
                     "render": (row, type, data) => {
                         return moment(row).format("Do MMMM YYYY, HH:mm");
@@ -139,7 +146,19 @@
                         `;
                     }
                 }
-            ]
+            ],
+            createdRow: ( row, data, dataIndex) => {
+                let currDate = moment().format("Do-MM-YYYY");
+                let endDate = moment(data.end_date).format("Do-MM-YYYY");
+                
+                if(data.status == 'process'){
+                    if(currDate == endDate){
+                        $(row).addClass('table-warning');
+                    } else if(currDate > endDate){
+                        $(row).addClass('table-danger');
+                    }
+                }
+            }
         });
     });
 

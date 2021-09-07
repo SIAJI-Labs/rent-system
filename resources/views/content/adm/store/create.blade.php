@@ -87,6 +87,16 @@
             <span class="invalid-feedback">{{ $message }}</span>
             @enderror
         </div>
+
+        <div class="form-group">
+            <label>Chart Js Color</label>
+            <input data-jscolor="{value:'{{ $data->chart_hex_color ?? '#FFFFF' }}'}" class="form-control @error('chart_color') is-invalid @enderror" name="chart_color" id="input-chart_color">
+            
+            @error('chart_color')
+            <span class="invalid-feedback">{{ $message }}</span>
+            @enderror
+            <small class="text-muted d-block">*Warna untuk Chart Bar pada fitur Keuangan</small>
+        </div>
     </div>
     <!-- /.card-body -->
     <div class="card-footer">
@@ -103,10 +113,17 @@
 @section('js_plugins')
     {{-- CKEditor --}}
     @include('layouts.adm.partials.plugins.ckeditor-js')
+    {{-- JS Color --}}
+    @include('layouts.adm.partials.plugins.jscolor-js')
 @endsection
 
 @section('js_inline')
 <script>
+    // JS Color
+    jscolor.presets.default = {
+        closeButton:true
+    };
+
     // CKEditor
     const watchdog = new CKSource.EditorWatchdog();
     window.watchdog = watchdog;

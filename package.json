@@ -22,7 +22,9 @@
         "sass-loader": "^11.0.1"
     },
     "dependencies": {
+        "@eastdesire/jscolor": "^2.4.6",
         "admin-lte": "^3.1",
+        "chart.js": "^3.5.1",
         "datatables.mark.js": "^2.1.0",
         "datatables.net-plugins": "^1.10.24",
         "inputmask": "^5.0.5",

@@ -14,7 +14,7 @@
     "/assets/plugins/datatables/responsive/css/dataTables.responsive.css": "/assets/plugins/datatables/responsive/css/dataTables.responsive.css?id=f1dcacc2754aece0d662",
     "/assets/plugins/datatables/bs4/css/datatables.bs4.css": "/assets/plugins/datatables/bs4/css/datatables.bs4.css?id=65fc53541010c77a517b",
     "/assets/adminlte/css/app-custom.css": "/assets/adminlte/css/app-custom.css?id=4479b18503ffdcc9f22f",
-    "/assets/adminlte/js/function.js": "/assets/adminlte/js/function.js?id=db1cd5d1087c26a4f72b",
+    "/assets/adminlte/js/function.js": "/assets/adminlte/js/function.js?id=db38b61df42668d89381",
     "/assets/plugins/fontawesome-free/css/all.css": "/assets/plugins/fontawesome-free/css/all.css?id=9280ef20d2d40a028710",
     "/assets/plugins/moment/dist/moment.js": "/assets/plugins/moment/dist/moment.js?id=5c158b940513c7dc2ebd",
     "/assets/plugins/bootstrap/css/bootstrap.css": "/assets/plugins/bootstrap/css/bootstrap.css?id=6d0390c053b857e8d09d",
@@ -43,5 +43,9 @@
     "/assets/plugins/lightcase/css/lightcase.css": "/assets/plugins/lightcase/css/lightcase.css?id=47bb79d38842b5965d7d",
     "/assets/plugins/lightcase/js/lightcase.js": "/assets/plugins/lightcase/js/lightcase.js?id=294a775090d6358d8c89",
     "/assets/plugins/owl-carousel/css/owl-carousel.css": "/assets/plugins/owl-carousel/css/owl-carousel.css?id=c8322bd5bffc8e2856f2",
-    "/assets/plugins/jquery-match-height/js/jquery.matchHeight.min.js": "/assets/plugins/jquery-match-height/js/jquery.matchHeight.min.js?id=3182b2beddb1f798f66d"
+    "/assets/plugins/jquery-match-height/js/jquery.matchHeight.min.js": "/assets/plugins/jquery-match-height/js/jquery.matchHeight.min.js?id=3182b2beddb1f798f66d",
+    "/assets/plugins/chart/js/Chart.bundle.js": "/assets/plugins/chart/js/Chart.bundle.js?id=cda1cb9319dc70d4cb41",
+    "/assets/plugins/chart/css/Chart.css": "/assets/plugins/chart/css/Chart.css?id=5d952d15b0234f260dc9",
+    "/assets/plugins/chart/3.5/js/chart.min.js": "/assets/plugins/chart/3.5/js/chart.min.js?id=8816771bf627fee82a3e",
+    "/assets/plugins/jscolor/jscolor.min.js": "/assets/plugins/jscolor/jscolor.min.js?id=f192288c1c449df2e3c6"
 }

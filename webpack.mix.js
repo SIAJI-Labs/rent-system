@@ -128,3 +128,19 @@ mix.js([
 mix.copy([
     'node_modules/jquery-match-height/dist/jquery.matchHeight-min.js'
 ], 'public/assets/plugins/jquery-match-height/js/jquery.matchHeight.min.js');
+// Chart Js
+mix.copy([
+    'node_modules/admin-lte/plugins/chart.js/Chart.bundle.js'
+], 'public/assets/plugins/chart/js/Chart.bundle.js');
+mix.copy([
+    'node_modules/admin-lte/plugins/chart.js/Chart.css'
+], 'public/assets/plugins/chart/css/Chart.css');
+// Chart Js 3.5
+mix.copy([
+    // 'node_modules/chart.js/dist/Chart.bundle.min.js',
+    'node_modules/chart.js/dist/chart.min.js'
+], 'public/assets/plugins/chart/3.5/js/chart.min.js');
+// Color Picker
+mix.copy([
+    'node_modules/@eastdesire/jscolor/jscolor.min.js' 
+], 'public/assets/plugins/jscolor/jscolor.min.js');

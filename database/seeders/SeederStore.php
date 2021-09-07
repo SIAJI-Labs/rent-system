@@ -24,10 +24,17 @@ class SeederStore extends Seeder
             'Gedong Kuning',
             'Pleret'  
         ];
-        foreach($store as $item){
+        $color = [
+            '#F0F465',
+            '#50C5B7',
+            '#533A71'
+        ];
+        foreach($store as $key => $item){
             Store::create([
                 'name' => $item,
                 'invoice_prefix' => substr(strtoupper(str_replace(' ', '', $item)), 0, 6),
+                'chart_hex_color' => $color[$key],
+                'chart_rgb_color' => convertHexToRgb($color[$key]),
                 'is_active' => true
             ]);
         }

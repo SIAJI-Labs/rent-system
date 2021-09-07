@@ -120,5 +120,65 @@ function formatRupiah(angka, prefix = 'Rp'){
 	rupiah 	= reverse.match(/\d{1,3}/g);
     rupiah	= rupiah.join('.').split('').reverse().join('');
     
+    if(angka < 0){
+        return prefix == undefined ? `-(${rupiah})` : `-(${prefix} ${rupiah})`;
+    }
     return prefix == undefined ? rupiah : prefix+" "+rupiah;
+}
+
+// Indonesian Format (Month)
+function formatBulan(angka){
+    let name = '';
+    switch(angka){
+        case 1:
+            name = 'Januari';
+            break;
+        case 2:
+            name = 'Februari';
+            break;
+        case 3:
+            name = 'Maret';
+            break;
+        case 4:
+            name = 'April';
+            break;
+        case 5:
+            name = 'Mei';
+            break;
+        case 6:
+            name = 'Juni';
+            break;
+        case 7:
+            name = 'Juli';
+            break;
+        case 8:
+            name = 'Agustus';
+            break;
+        case 9:
+            name = 'September';
+            break;
+        case 10:
+            name = 'Oktober';
+            break;
+        case 11:
+            name = 'November';
+            break;
+        case 12:
+            name = 'Desember';
+            break;
+    }
+
+    return name;
+}
+
+// Generate Random RGB Value
+function randomRgb()
+{
+    var o = Math.round, r = Math.random, s = 255;
+    
+    return [
+    	o(r()*s),
+        o(r()*s), 
+        o(r()*s)
+    ];
 }

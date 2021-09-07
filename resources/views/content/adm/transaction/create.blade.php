@@ -31,7 +31,7 @@
 @endsection
 
 @section('content')
-<form class="card" method="POST" action="{{ route('adm.transaction.store') }}" enctype="multipart/form-data">
+<form class="card" method="POST" action="{{ route('adm.transaction.store') }}" enctype="multipart/form-data" id="transaction-form">
     @csrf
 
     <div class="card-header">
@@ -45,7 +45,16 @@
     </div>
     <div class="card-body">
         @if($errors->any())
-            {!! implode('', $errors->all('<div>:message</div>')) !!}
+            <div class="callout callout-warning">
+                <h5>Terdapat kesalahan!</h5>
+                <p>Mohon periksa kembali input anda di bawah ini.</p>
+
+                <ul>
+                    @foreach ($errors->all() as $item)
+                        <li>{{ $item }}</li>
+                    @endforeach
+                </ul>
+            </div>
         @endif
 
         <div class="row">
@@ -89,21 +98,36 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Jenis Transaksi</label>
-                    <select class="form-control form-select2 @error('type') is-invalid @enderror" id="input-type" name="type" style="width: 100% !important;">
-                        <option value="normal" {{ old('type') == 'normal' ? 'selected' : '' }}>Sewa / Normal</option>
-                        <option value="booking" {{ old('type') == 'booking' ? 'selected' : '' }}>Booking</option>
-                    </select>
-                    @error('type')
+                    <label>Periode Sewa</label>
+                    <input type="text" name="daterange" class="form-control @error('daterange') is-invalid @enderror" id="input-daterange" placeholder="Periode Sewa" autocomplete="off" value="{{ old('daterange') }}" required>
+                    
+                    @error('daterange')
                     <span class="invalid-feedback">{{ $message }}</span>
                     @enderror
                 </div>
 
                 <div class="form-group">
-                    <label>Periode Sewa</label>
-                    <input type="text" name="daterange" class="form-control @error('daterange') is-invalid @enderror" id="input-daterange" placeholder="Periode Sewa" autocomplete="off" value="{{ old('daterange') }}" required>
-                    
-                    @error('daterange')
+                    <label>Status Transaksi</label>
+                    @php
+                        $status = [
+                            [
+                                'value' => 'process',
+                                'name' => 'Proses'
+                            ], [
+                                'value' => 'booking',
+                                'name' => 'Booking'
+                            ], [
+                                'value' => 'complete',
+                                'name' => 'Selesai'
+                            ]
+                        ];
+                    @endphp
+                    <select class="form-control form-select2 @error('status') is-invalid @enderror" id="input-status" name="status" style="width: 100% !important;">
+                        @foreach ($status as $item)
+                            <option value="{{ $item['value'] }}" {{ old('status') == $item['value'] ? 'selected' : '' }}>{{ $item['name'] }}</option>
+                        @endforeach
+                    </select>
+                    @error('type')
                     <span class="invalid-feedback">{{ $message }}</span>
                     @enderror
                 </div>
@@ -147,7 +171,7 @@
                                         <input type="hidden" name="product[0][old_sn_id]" value="{{ old('product.0.old_sn_id') }}" id="input_0-old_sn_id" readonly>
                                         <input type="hidden" name="product[0][old_sn_id_text]" value="{{ old('product.0.old_sn_id_text') }}" id="input_0-old_sn_id_text" readonly>
         
-                                        <select class="form-control form-product-sn @error('product.0.sn_id') is-invalid @enderror" id="input_0-sn_id" name="product[0][sn_id]" style="width: 100% !important;" {{ old('product.0.old_product_id') && old('store_id') ? '' : 'disabled' }} disabled>
+                                        <select class="form-control form-product-sn @error('product.0.sn_id') is-invalid @enderror" id="input_0-sn_id" name="product[0][sn_id]" style="width: 100% !important;" {{ old('product.0.old_product_id') && old('store_id') ? '' : 'disabled' }}>
                                             @if(old('product.0.sn_id'))
                                             <option value="{{ old('product.0.old_sn_id') }}" selected>{{ old('product.0.old_sn_id_text') }}</option>
                                             @endif
@@ -156,7 +180,7 @@
                                         <span class="invalid-feedback">{{ $message }}</span>
                                         @enderror
 
-                                        <small class="text-muted d-block product-needed">*Harap pilih produk terlebih dahulu</small>
+                                        <small class="text-muted {{ old('product.0.old_product_id') && old('store_id') ? 'd-none' : 'd-block' }} product-needed">*Harap pilih produk terlebih dahulu</small>
                                     </div>
                                 </div>
     
@@ -230,7 +254,7 @@
                                                     <span class="invalid-feedback">{{ $message }}</span>
                                                     @enderror
 
-                                                    <small class="text-muted d-block product-needed">*Harap pilih produk terlebih dahulu</small>
+                                                    <small class="text-muted {{ old('product.0.old_product_id') && old('store_id') ? 'd-none' : 'd-block' }} product-needed">*Harap pilih produk terlebih dahulu</small>
                                                 </div>
                                             </div>
                 
@@ -319,7 +343,7 @@
                     <label class="col-sm-4 col-form-label">Lama Sewa</label>
                     <div class="col-sm-8">
                         <div class="input-group">
-                            <input data-inputmask="'alias': 'decimal', 'groupSeparator': ',', 'digits': '0', 'allowMinus': 'false'" name="periode" id="input-periode" class="form-control" value="0" min="0" placeholder="Lama Sewa" min="0" onchange="calculateSumAmount()" readonly>
+                            <input data-inputmask="'alias': 'decimal', 'groupSeparator': ',', 'digits': '0', 'allowMinus': 'false'" name="periode" id="input-periode" class="form-control" value="{{ old('periode') ?? 1 }}" min="0" placeholder="Lama Sewa" min="0" onchange="calculateSumAmount()" readonly>
                             <div class="input-group-append">
                                 <span class="input-group-text">hari</span>
                             </div>
@@ -333,7 +357,7 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text">Rp</span>
                             </div>
-                            <input data-inputmask="'alias': 'decimal', 'groupSeparator': ',', 'digits': '0', 'allowMinus': 'false'" name="extra_amount" id="input-extra_amount" class="form-control" value="0" min="0" placeholder="Biaya Tambahan" min="0" onchange="calculateSumAmount()">
+                            <input data-inputmask="'alias': 'decimal', 'groupSeparator': ',', 'digits': '0', 'allowMinus': 'false'" name="extra_amount" id="input-extra_amount" class="form-control" value="{{ old('extra_amount') ?? 0 }}" min="0" placeholder="Biaya Tambahan" min="0" onchange="calculateSumAmount()">
                         </div>
                     </div>
                 </div>
@@ -346,7 +370,7 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text">Rp</span>
                             </div>
-                            <input data-inputmask="'alias': 'decimal', 'groupSeparator': ',', 'digits': '0', 'allowMinus': 'false'" name="sum_amount" id="input-sum_amount" class="form-control" value="0" min="0" placeholder="Jumlah Biaya" min="0" readonly>
+                            <input data-inputmask="'alias': 'decimal', 'groupSeparator': ',', 'digits': '0', 'allowMinus': 'false'" name="sum_amount" id="input-sum_amount" class="form-control" value="{{ old('sum_amount') ?? 0 }}" min="0" placeholder="Jumlah Biaya" min="0" readonly>
                         </div>
                     </div>
                 </div>
@@ -365,7 +389,7 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text">Rp</span>
                             </div>
-                            <input data-inputmask="'alias': 'decimal', 'groupSeparator': ',', 'digits': '0', 'allowMinus': 'false'" name="paid" id="input-paid" class="form-control" value="0" min="0" placeholder="Biaya dibayarkan" min="0" onchange="calculateLeftOver()">
+                            <input data-inputmask="'alias': 'decimal', 'groupSeparator': ',', 'digits': '0', 'allowMinus': 'false'" name="paid" id="input-paid" class="form-control" value="{{ old('paid') ?? 0 }}" min="0" placeholder="Biaya dibayarkan" min="0" onchange="calculateLeftOver()">
                         </div>
                     </div>
                 </div>
@@ -379,7 +403,7 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text">Rp</span>
                             </div>
-                            <input data-inputmask="'alias': 'decimal', 'groupSeparator': ',', 'digits': '0', 'allowMinus': 'false'" name="leftover" id="input-leftover" class="form-control" value="0" min="0" placeholder="Kekurangan Biaya" min="0" readonly>
+                            <input data-inputmask="'alias': 'decimal', 'groupSeparator': ',', 'digits': '0', 'allowMinus': 'false'" name="leftover" id="input-leftover" class="form-control" value="{{ old('leftover') ?? 0 }}" min="0" placeholder="Kekurangan Biaya" min="0" readonly>
                         </div>
                     </div>
                 </div>
@@ -390,7 +414,7 @@
     <div class="card-footer">
         <div class="btn-group float-right">
             <button type="button" onclick="formReset()" class="btn btn-sm btn-danger">Reset</button>
-            <button type="submit" class="btn btn-sm btn-primary">Submit</button>
+            <button type="submit" id="btn-submit" class="btn btn-sm btn-primary">Submit</button>
         </div>
         <div class="clearfix"></div>
     </div>
@@ -622,6 +646,7 @@
         let days = $("#input-periode").inputmask('unmaskedvalue');
 
         calc = ((parseInt(sum) - parseInt(discount)) * parseInt(days)) + parseInt(extra_charge);
+        console.log("Calc", calc);
         $("#input-sum_amount").val(calc ?? 0);
         calculateLeftOver();
     }
@@ -651,7 +676,6 @@
         let select2_query = {};
         $(".form-select2").select2({
             theme: 'bootstrap4',
-            allowClear: true,
         });
         $("#input-store_id").select2({
             placeholder: 'Cari Toko',
@@ -869,6 +893,234 @@
         });
     });
 
+    // Review on Transaction Cancelation Status
+    $("#btn-submit").click((e) => {
+        let daterange = $("#input-daterange").data('daterangepicker')
+        // Get Required Data
+        let status = $("#input-status").val();
+        let startRent = daterange.startDate.format('YYYY-MM-DD HH:mm:ss');
+        let endRent = daterange.endDate.format('YYYY-MM-DD HH:mm:ss');
+        let currDate = moment().format('YYYY-MM-DD HH:mm:ss');
+
+        // Validation by Status
+        if(status === "process"){
+            if(currDate < startRent){
+                // Expect: Booking
+                e.preventDefault();
+                Swal.fire({
+                    title: "Apakah anda yakin?",
+                    html: `
+                        <p>Anda akan memproses transaksi lebih awal dari jadwal yang ditentukan</p>
+
+                        <table class="table table-bordered table-hover table-striped">
+                            <thead>
+                                <tr>
+                                    <th colspan="2">Periode Sewa</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="text-left">Tanggal Mulai</th>
+                                    <td class="text-left">${daterange.startDate.format('Do MMMM YYYY, HH:mm:ss')}</td>
+                                </tr>
+                                <tr>
+                                    <th class="text-left">Tanggal Selesai</th>
+                                    <td class="text-left">${daterange.endDate.format('Do MMMM YYYY, HH:mm:ss')}</td>
+                                </tr>
+                                <tr>
+                                    <th class="text-left">Tanggal Sekarang</th>
+                                    <td class="text-left">${moment().format('Do MMMM YYYY, HH:mm:ss')}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="alert alert-info alert-dismissible">
+                            <span>Status diperkirakan: <b><u>Booking</u></b></span>
+                        </div>
+                    `,
+                    text: "",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Proses Transaksi!',
+                    cancelButtonText: 'Tunggu sebentar!',
+                    reverseButtons: true,
+                }).then((result) => {
+                    if (result.value) {
+                        $("#transaction-form").submit();
+                    }
+                });
+            } else if(endRent < currDate){
+                // Expect: Complete / Canceled
+                e.preventDefault();
+                Swal.fire({
+                    title: "Apakah anda yakin?",
+                    html: `
+                        <p>Anda akan memproses transaksi dengan jadwal yang tidak valid (Tanggal selesai lebih kecil atau sama dengan tanggal saat ini)</p>
+
+                        <table class="table table-bordered table-hover table-striped">
+                            <thead>
+                                <tr>
+                                    <th colspan="2">Periode Sewa</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="text-left">Tanggal Mulai</th>
+                                    <td class="text-left">${daterange.startDate.format('Do MMMM YYYY, HH:mm:ss')}</td>
+                                </tr>
+                                <tr>
+                                    <th class="text-left">Tanggal Selesai</th>
+                                    <td class="text-left">${daterange.endDate.format('Do MMMM YYYY, HH:mm:ss')}</td>
+                                </tr>
+                                <tr>
+                                    <th class="text-left">Tanggal Sekarang</th>
+                                    <td class="text-left">${moment().format('Do MMMM YYYY, HH:mm:ss')}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="alert alert-info alert-dismissible">
+                            <span>Status diperkirakan: <b><u>Selesai</u></b> / <b><u>Dibatalkan</u></b></span>
+                        </div>
+                    `,
+                    text: "",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Proses Transaksi!',
+                    cancelButtonText: 'Tunggu sebentar!',
+                    reverseButtons: true,
+                }).then((result) => {
+                    if (result.value) {
+                        $("#transaction-form").submit();
+                    }
+                });
+            }
+        } else if(status === "booking"){
+            if(startRent < currDate){
+                // Expect: Process
+                e.preventDefault();
+                Swal.fire({
+                    title: "Apakah anda yakin?",
+                    html: `
+                        <p>Anda akan membuat booking transaksi dengan jadwal yang tidak valid (Tanggal Booking tidak lebih besar dari tanggal saat ini)</p>
+
+                        <table class="table table-bordered table-hover table-striped">
+                            <thead>
+                                <tr>
+                                    <th colspan="2">Periode Sewa</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="text-left">Tanggal Mulai</th>
+                                    <td class="text-left">${daterange.startDate.format('Do MMMM YYYY, HH:mm:ss')}</td>
+                                </tr>
+                                <tr>
+                                    <th class="text-left">Tanggal Selesai</th>
+                                    <td class="text-left">${daterange.endDate.format('Do MMMM YYYY, HH:mm:ss')}</td>
+                                </tr>
+                                <tr>
+                                    <th class="text-left">Tanggal Sekarang</th>
+                                    <td class="text-left">${moment().format('Do MMMM YYYY, HH:mm:ss')}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="alert alert-info alert-dismissible">
+                            <span>Status diperkirakan: <b><u>Proses</u></b></span>
+                        </div>
+                    `,
+                    text: "",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Buat Transaksi!',
+                    cancelButtonText: 'Tunggu sebentar!',
+                    reverseButtons: true,
+                }).then((result) => {
+                    if (result.value) {
+                        $("#transaction-form").submit();
+                    }
+                });
+            }
+        } else if(status === "complete"){
+            if(startRent > currDate || endRent > currDate){
+                // Expect: Booking / Process
+                e.preventDefault();
+                Swal.fire({
+                    title: "Apakah anda yakin?",
+                    html: `
+                        <p>Anda akan menyelesaikan transaksi lebih awal dari jadwal yang ditentukan</p>
+
+                        <table class="table table-bordered table-hover table-striped">
+                            <thead>
+                                <tr>
+                                    <th colspan="2">Periode Sewa</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="text-left">Tanggal Mulai</th>
+                                    <td class="text-left">${daterange.startDate.format('Do MMMM YYYY, HH:mm:ss')}</td>
+                                </tr>
+                                <tr>
+                                    <th class="text-left">Tanggal Selesai</th>
+                                    <td class="text-left">${daterange.endDate.format('Do MMMM YYYY, HH:mm:ss')}</td>
+                                </tr>
+                                <tr>
+                                    <th class="text-left">Tanggal Sekarang</th>
+                                    <td class="text-left">${moment().format('Do MMMM YYYY, HH:mm:ss')}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="alert alert-info alert-dismissible">
+                            <span>Status diperkirakan: ${startRent > currDate ? '<b><u>Booking</u></b>' : '<b><u>Proses</u></b>'}</span>
+                        </div>
+                    `,
+                    text: "",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Selesaikan Transaksi!',
+                    cancelButtonText: 'Tunggu sebentar!',
+                    reverseButtons: true,
+                }).then((result) => {
+                    if (result.value) {
+                        $("#transaction-form").submit();
+                    }
+                });
+            }
+        } else if(status === "cancel"){
+            e.preventDefault();
+            Swal.fire({
+                title: "Apakah anda yakin?",
+                html: `
+                    <p>Anda akan membatalkan transaksi terkait dengan rincian keuangan sebagai berikut</p>
+
+                    <table class="table table-hover table-striped table-bordered">
+                        <tr>
+                            <th class="text-left">Di bayar</th>
+                            <td class="text-left">${formatRupiah($("#input-paid").inputmask('unmaskedvalue'))}</td>
+                        </tr>
+                        <tr>
+                            <th class="text-left">Kekurangan</th>
+                            <td class="text-left">${formatRupiah($("#input-leftover").inputmask('unmaskedvalue'))}</td>
+                        </tr>
+                    </table>
+                `,
+                text: "",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Batalkan Transaksi!',
+                cancelButtonText: 'Tunggu sebentar!',
+                reverseButtons: true,
+            }).then((result) => {
+                if (result.value) {
+                    $("#transaction-form").submit();
+                }
+            });
+        }
+    });
+
     $("#input-customer_id").change((e) => {
         let select_data = $(e.target).select2('data');
         let data_id = '';
@@ -925,11 +1177,17 @@
         }
 
         setTimeout((e) => {
-            let daterange = $(el).data('daterangepicker');
-            let startDate = daterange.startDate.format('YYYY-MM-DD');
-            let endDate = daterange.endDate.format('YYYY-MM-DD');
+            let daterange = $("#input-daterange").data('daterangepicker');
+            let diff = 1;
+            if(daterange){
+                let startDate = daterange.startDate.format('YYYY-MM-DD');
+                let endDate = daterange.endDate.format('YYYY-MM-DD');
+                diff = moment(endDate).diff(moment(startDate), 'days');
+            }
 
-            let diff = moment(endDate).diff(moment(startDate), 'days');
+            if(diff <= 0){
+                diff = 1;
+            }
             $("#input-periode").val(diff).change();
         });
     });

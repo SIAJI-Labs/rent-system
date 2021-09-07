@@ -98,8 +98,25 @@
                             <th>Produk</th>
                             <th>Serial Number</th>
                             <th>Biaya @</th>
-                            <th>Diskon</th>
+                            <th>Potongan @</th>
                             <th>Extra</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header">
+                <h3 class="card-title">Keuangan Transaksi</h3>
+            </div>
+            <div class="card-body">
+                <table class="table table-hover table-striped table-bordered" id="transaction_accounting-table">
+                    <thead>
+                        <tr>
+                            <th>Kasir</th>
+                            <th>Nominal</th>
+                            <th>Tanggal</th>
                         </tr>
                     </thead>
                 </table>
@@ -116,6 +133,13 @@
                         $date = null;   
                     @endphp
                     @foreach($data->transactionLog()->orderBy('created_at', 'desc')->get() as $logs)
+                        @php
+                            $audit = \OwenIt\Auditing\Models\Audit::whereNotNull('extra_type')
+                                ->where('extra_type', get_class($logs))
+                                ->where('extra_id', $logs->id)
+                                ->get()
+                        @endphp
+
                         @if(date("M d, Y", strtotime($date)) != date("M d, Y", strtotime($logs->created_at)))
                     <div class="time-label" id="label-{{ date('dmy', strtotime($logs->created_at)) }}">
                         <span class="bg-red">{{ date("M d, Y", strtotime($logs->created_at)) }}</span>
@@ -126,7 +150,14 @@
                         <div class="timeline-item">
                             <span class="time"><i class="fas fa-clock"></i> {{ date("H:i:s", strtotime($logs->created_at)) }}</span>
                             <h3 class="timeline-header"><a href="#">{{ $logs->user_id ? $logs->user->name : 'System' }}</a></h3>
-                            <div class="timeline-body">{!! $logs->log !!}</div>
+                            <div class="timeline-body">
+                                <span>{!! $logs->log !!}</span>
+                                
+                                @if (!empty($audit) && count($audit) > 0)
+                                    {{-- Transaction Audit --}}
+                                    @include('content.adm.transaction.partials.audit', $audit)
+                                @endif
+                            </div>
                         </div>
                     </div>
                         @else
@@ -135,7 +166,14 @@
                         <div class="timeline-item">
                             <span class="time"><i class="fas fa-clock"></i> {{ date("H:i:s", strtotime($logs->created_at)) }}</span>
                             <h3 class="timeline-header"><a href="#">{{ $logs->user_id ? $logs->user->name : 'System' }}</a></h3>
-                            <div class="timeline-body">{!! $logs->log !!}</div>
+                            <div class="timeline-body">
+                                <span>{!! $logs->log !!}</span>
+                                
+                                @if (!empty($audit) && count($audit) > 0)
+                                    {{-- Transaction Audit --}}
+                                    @include('content.adm.transaction.partials.audit', $audit)
+                                @endif
+                            </div>
                         </div>
                     </div>
                         @endif
@@ -258,6 +296,54 @@
                             <hr class="my-1"/>
                             <span>Catatan: ${note}</span>
                         `;
+                    }
+                }
+            ]
+        });
+        $("#transaction_accounting-table").DataTable({
+            order: [2, 'desc'],
+            responsive: true,
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: "{{ route('adm.json.datatable.transaction.accounting.all', $data->uuid) }}",
+                type: "GET",
+            },
+            success: (result) => {
+                console.log(result);
+            },
+            columns: [
+                { "data": "user.name", "name": "user.name" },
+                { "data": "amount" },
+                { "data": "created_at" },
+            ],
+            columnDefs: [
+                {
+                    "targets": "_all",
+                    "className": "align-middle"
+                }, {
+                    "targets": 0,
+                    "render": (row, type, data) => {
+                        return `
+                            <a href="javascript:void(0)">${row}</a>
+                        `;
+                    }
+                }, {
+                    "targets": 1,
+                    "render": (row, type, data) => {
+                        if(data.type == "outcome"){
+                            row = 0 - row;
+                        }
+                        return `
+                            <span>${formatRupiah(row)}</span>
+                            <hr class="my-1"/>
+                            <span class="badge badge-${data.type == 'income' ? 'success' : 'danger'}">Uang ${data.type == 'income' ? 'masuk' : 'keluar'}</span>
+                        `;
+                    }
+                }, {
+                    "targets": 2,
+                    "render": (row, type, data) => {
+                        return moment(row).format('Do MMMM YYYY, HH:mm:ss');
                     }
                 }
             ]

@@ -68,6 +68,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(\App\Models\TransactionLog::class, 'user_id');
     }
+    public function accounting()
+    {
+        return $this->hasMany(\App\Models\Accounting::class, 'user_id');
+    }
 
     /**
      * Foreign Key Relation

@@ -75,6 +75,12 @@ Route::group([
         // Transaction
         Route::resource('transaction', \TransactionController::class);
 
+        // Accounting
+        Route::get('accounting/{year}/{month}/{date}', [\App\Http\Controllers\Admin\AccountingController::class, 'detail'])->name('accounting.detail');
+        Route::get('accounting/{year}/{month}', [\App\Http\Controllers\Admin\AccountingController::class, 'daily'])->name('accounting.daily');
+        Route::get('accounting/{year}', [\App\Http\Controllers\Admin\AccountingController::class, 'monthly'])->name('accounting.monthly');
+        Route::get('accounting', [\App\Http\Controllers\Admin\AccountingController::class, 'yearly'])->name('accounting.yearly');
+
         /**
          * Json Data
          * 
@@ -136,8 +142,16 @@ Route::group([
 
                 // Transaction Item
                 Route::get('transaction/{transactionId}/item', [\App\Http\Controllers\Admin\TransactionItemController::class, 'datatableAll'])->name('transaction.item.all');
+                // Transaction Accounting
+                Route::get('transaction/{transactionId}/accounting', [\App\Http\Controllers\Admin\TransactionController::class, 'datatableAccounting'])->name('transaction.accounting.all');
                 // Transaction
                 Route::get('transaction', [\App\Http\Controllers\Admin\TransactionController::class, 'datatableAll'])->name('transaction.all');
+
+                // Accounting
+                Route::get('accounting/{year}/{month}/{date}', [\App\Http\Controllers\Admin\AccountingController::class, 'datatableDetail'])->name('accounting.detail');
+                Route::get('accounting/{year}/{month}', [\App\Http\Controllers\Admin\AccountingController::class, 'datatableDaily'])->name('accounting.daily');
+                Route::get('accounting/{year}', [\App\Http\Controllers\Admin\AccountingController::class, 'datatableMonthly'])->name('accounting.monthly');
+                Route::get('accounting', [\App\Http\Controllers\Admin\AccountingController::class, 'datatableYearly'])->name('accounting.yearly');
             });
         });
     });
