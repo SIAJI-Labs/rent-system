@@ -144,3 +144,13 @@ mix.copy([
 mix.copy([
     'node_modules/@eastdesire/jscolor/jscolor.min.js' 
 ], 'public/assets/plugins/jscolor/jscolor.min.js');
+// Lightbox 2
+mix.copyDirectory([
+    'node_modules/lightbox2/dist/css'
+], 'public/assets/plugins/lightbox2/css');
+mix.copyDirectory([
+    'node_modules/lightbox2/dist/images'
+], 'public/assets/plugins/lightbox2/images');
+mix.copyDirectory([
+    'node_modules/lightbox2/dist/js'
+], 'public/assets/plugins/lightbox2/js');

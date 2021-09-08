@@ -61,7 +61,7 @@
                 <li class="nav-header">DATA TRANSAKSI</li>
                 <li class="nav-item">
                     <a href="{{ route('adm.transaction.index') }}" class="nav-link d-flex align-items-center {{ !empty($sidebar_menu) ? ($sidebar_menu == 'transaction' ? 'active' : '') : '' }}">
-                        <i class="nav-icon fas fa-money-bill"></i>
+                        <i class="nav-icon fas fa-file-invoice"></i>
                         <p>
                             Transaksi
                         </p>
@@ -95,6 +95,18 @@
                 </li>
 
                 <li class="nav-header">MISCELLANEOUS</li>
+                <li class="nav-item">
+                    <a href="{{ route('larecipe.index') }}" class="nav-link d-flex align-items-center" target="_blank">
+                        <i class="nav-icon far fa-circle text-info"></i>
+                        <p>Dokumentasi</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('log-viewer::dashboard') }}" class="nav-link d-flex align-items-center" target="_blank">
+                        <i class="nav-icon far fa-circle text-info"></i>
+                        <p>Sistem Log</p>
+                    </a>
+                </li>
                 <li class="nav-item">
                     <a href="javascript:void(0)" class="nav-link d-flex align-items-center" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                         <i class="nav-icon fas fa-sign-out-alt text-danger"></i>

@@ -25,8 +25,8 @@
 @section('css_plugins')
     {{-- Datatable --}}
     @include('layouts.adm.partials.plugins.datatable-css')
-    {{-- Lightcase --}}
-    @include('layouts.adm.partials.plugins.lightcase-css')
+    {{-- Lightbox2 --}}
+    @include('layouts.adm.partials.plugins.lightbox2-css')
 @endsection
 
 @section('content')
@@ -56,7 +56,11 @@
             <tr>
                 <th>Gambar</th>
                 <td>
-                    <a href="{{ asset('images/category'.'/'.$data->pict) }}" data-rel="lightcase" class="btn btn-sm btn-primary">Preview</a>
+                    @if (!empty($data->pict))
+                        <a href="{{ asset('images/category'.'/'.$data->pict) }}" data-lightbox="${row}" class="btn btn-sm btn-primary">Preview</a>
+                    @else
+                        <span>-</span>
+                    @endif
                 </td>
             </tr>
         </table>
@@ -91,8 +95,8 @@
 @section('js_plugins')
     {{-- Datatable --}}
     @include('layouts.adm.partials.plugins.datatable-js')
-    {{-- Lightcase --}}
-    @include('layouts.adm.partials.plugins.lightcase-js')
+    {{-- Lightbox2 --}}
+    @include('layouts.adm.partials.plugins.lightbox2-js')
 @endsection
 
 @section('js_inline')
@@ -100,7 +104,10 @@
     $.fn.dataTable.moment( 'dddd, MMMM Do, YYYY' );
     
     $(document).ready((e) => {
-        $('a[data-rel^=lightcase]').lightcase();
+        lightbox.option({
+            'resizeDuration': 200,
+            'wrapAround': true
+        });
 
         $("#product-table").DataTable({
             order: [2, 'asc'],

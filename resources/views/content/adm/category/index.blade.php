@@ -21,8 +21,8 @@
 @section('css_plugins')
     {{-- Datatable --}}
     @include('layouts.adm.partials.plugins.datatable-css')
-    {{-- Lightcase --}}
-    @include('layouts.adm.partials.plugins.lightcase-css')
+    {{-- Lightbox2 --}}
+    @include('layouts.adm.partials.plugins.lightbox2-css')
 @endsection
 
 @section('content')
@@ -60,8 +60,8 @@
 @section('js_plugins')
     {{-- Datatable --}}
     @include('layouts.adm.partials.plugins.datatable-js')
-    {{-- Lightcase --}}
-    @include('layouts.adm.partials.plugins.lightcase-js')
+    {{-- Lightbox2 --}}
+    @include('layouts.adm.partials.plugins.lightbox2-js')
 @endsection
 
 @section('js_inline')
@@ -69,13 +69,9 @@
     $.fn.dataTable.moment( 'dddd, MMMM Do, YYYY' );
     
     $(document).ready((e) => {
-        $('a[data-rel^=lightcase]').lightcase();
-        $('body').on('click', 'a[data-rel^=lightcase]', function(e) {
-            var href = $(this).attr('href');
-            lightcase.start({
-                href: href
-            });
-            e.preventDefault();
+        lightbox.option({
+            'resizeDuration': 200,
+            'wrapAround': true
         });
 
         $("#category-table").DataTable({
@@ -104,11 +100,15 @@
                     "searchable": false,
                     "orderable": false,
                     "render": (row, type, data) => {
-                        return `
-                            <a href="{{ asset('images/category') }}/${row}" data-rel="lightcase" class="btn btn-sm btn-primary">
-                                Preview
-                            </a>
-                        `;
+                        if(row){
+                            return `
+                                <a href="{{ asset('images/category') }}/${row}" data-lightbox="${row}" class="btn btn-sm btn-primary">
+                                    Preview
+                                </a>
+                            `;
+                        }
+
+                        return '-';
                     }
                 }, {
                     "targets": 3,

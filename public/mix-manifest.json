@@ -47,5 +47,17 @@
     "/assets/plugins/chart/js/Chart.bundle.js": "/assets/plugins/chart/js/Chart.bundle.js?id=cda1cb9319dc70d4cb41",
     "/assets/plugins/chart/css/Chart.css": "/assets/plugins/chart/css/Chart.css?id=5d952d15b0234f260dc9",
     "/assets/plugins/chart/3.5/js/chart.min.js": "/assets/plugins/chart/3.5/js/chart.min.js?id=8816771bf627fee82a3e",
-    "/assets/plugins/jscolor/jscolor.min.js": "/assets/plugins/jscolor/jscolor.min.js?id=f192288c1c449df2e3c6"
+    "/assets/plugins/jscolor/jscolor.min.js": "/assets/plugins/jscolor/jscolor.min.js?id=f192288c1c449df2e3c6",
+    "/assets/plugins/lightbox2/css/lightbox.css": "/assets/plugins/lightbox2/css/lightbox.css?id=7d38c9f78b335381bb96",
+    "/assets/plugins/lightbox2/css/lightbox.min.css": "/assets/plugins/lightbox2/css/lightbox.min.css?id=da9a11a7dd15df94a826",
+    "/assets/plugins/lightbox2/images/close.png": "/assets/plugins/lightbox2/images/close.png?id=3b4c8b0cb4babca068bf",
+    "/assets/plugins/lightbox2/images/loading.gif": "/assets/plugins/lightbox2/images/loading.gif?id=fbfcb563053f0408d74f",
+    "/assets/plugins/lightbox2/images/next.png": "/assets/plugins/lightbox2/images/next.png?id=95010c266141c39f64e7",
+    "/assets/plugins/lightbox2/images/prev.png": "/assets/plugins/lightbox2/images/prev.png?id=4912f5bbfa01c97718de",
+    "/assets/plugins/lightbox2/js/lightbox-plus-jquery.js": "/assets/plugins/lightbox2/js/lightbox-plus-jquery.js?id=cabf368ad60f37ed55be",
+    "/assets/plugins/lightbox2/js/lightbox-plus-jquery.min.js": "/assets/plugins/lightbox2/js/lightbox-plus-jquery.min.js?id=4f2d52bce33b08707a61",
+    "/assets/plugins/lightbox2/js/lightbox-plus-jquery.min.map": "/assets/plugins/lightbox2/js/lightbox-plus-jquery.min.map?id=9a64a73ec2367afe9dc3",
+    "/assets/plugins/lightbox2/js/lightbox.js": "/assets/plugins/lightbox2/js/lightbox.js?id=fa8f8c6b2c7ff36cbae2",
+    "/assets/plugins/lightbox2/js/lightbox.min.js": "/assets/plugins/lightbox2/js/lightbox.min.js?id=97df92e8611075baac79",
+    "/assets/plugins/lightbox2/js/lightbox.min.map": "/assets/plugins/lightbox2/js/lightbox.min.map?id=7c918e9e2d01bfdd9cce"
 }

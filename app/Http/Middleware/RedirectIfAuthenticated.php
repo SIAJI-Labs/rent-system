@@ -22,8 +22,21 @@ class RedirectIfAuthenticated
         $guards = empty($guards) ? [null] : $guards;
 
         foreach ($guards as $guard) {
+            \Log::debug("Check on Redirect if Authenticated Middleware", [
+                'guard' => $guard,
+                'guards' => $guards,
+                'check' => Auth::guard($guard)->check(),
+                'request' => $request->all()
+            ]);
             if (Auth::guard($guard)->check()) {
-                return redirect(RouteServiceProvider::HOME);
+                switch($guard){
+                    case 'admin':
+                        return redirect(route('adm.index'));
+                        break;
+                    default:
+                        return redirect(RouteServiceProvider::HOME);
+                        break;
+                }
             }
         }
 
