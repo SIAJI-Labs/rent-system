@@ -103,7 +103,11 @@
                     "searchable": false,
                     "orderable": false,
                     "render": (row, type, data) => {
-                        return `<span class="badge badge-${data.is_active ? 'primary' : 'danger'}">${data.is_active ? 'Aktif' : 'Tidak Aktif'}</span>`;
+                        let extra = ``;
+                        if(data.is_admin){
+                            extra = `<span class="badge badge-success">Super Admin</span>`;
+                        }
+                        return `<span class="badge badge-${data.is_active ? 'primary' : 'danger'}">${data.is_active ? 'Aktif' : 'Tidak Aktif'}</span> ${extra}`;
                     }
                 }, {
                     "targets": 3,

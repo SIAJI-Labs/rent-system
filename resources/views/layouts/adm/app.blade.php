@@ -60,7 +60,7 @@
 
             <!-- Preloader -->
             <div class="preloader flex-column justify-content-center align-items-center">
-                <img src="{{ getAvatar(($wtitle ?? env('APP_NAME')), 'gridy') }}" alt="Preloader" height="60" width="60">
+                <img class="animation__wobble" src="{{ getAvatar(($wtitle ?? env('APP_NAME')), 'gridy') }}" alt="Preloader" height="60" width="60">
             </div>
 
 			<!-- Content Wrapper. Contains page content -->
@@ -227,12 +227,12 @@
             }
             function formReset(){
                 Swal.fire({
-                    title: 'Are you sure?',
-                    text: "All un-saved data will be discarded and no changes will be saved!",
+                    title: 'Apakah anda yakin?',
+                    text: "Semua data yang belum tersimpan akan diabaikan, dan tidak ada perubahan yang akan disimpan!",
                     icon: 'warning',
                     showCancelButton: true,
-                    confirmButtonText: 'Yes, reset it!',
-                    cancelButtonText: 'No, cancel!',
+                    confirmButtonText: 'Ya, jalankan!',
+                    cancelButtonText: 'Tidak, batalkan!',
                     reverseButtons: true,
                 }).then((result) => {
                     // console.log(result);

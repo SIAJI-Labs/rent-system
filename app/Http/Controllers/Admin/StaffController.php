@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 class StaffController extends Controller
 {
+    private $acl = 'staff';
     private $staffModel;
     private $storeModel;
 
@@ -18,6 +19,11 @@ class StaffController extends Controller
     {
         $this->staffModel = new \App\Models\Admin();
         $this->storeModel = new \App\Models\Store();
+
+        // Spatie ACL
+        $this->middleware('permission:'.$this->acl.'-list', ['only' => ['index', 'show']]);
+        $this->middleware('permission:'.$this->acl.'-create', ['only' => ['create','store']]);
+        $this->middleware('permission:'.$this->acl.'-edit', ['only' => ['edit','update']]);
     }
 
     /**
@@ -79,6 +85,7 @@ class StaffController extends Controller
             $data->password = bcrypt($password);
             $data->raw_password = saEncryption($password);
             $data->is_active = $request->is_active == 'on' ? true : false;
+            $data->is_admin = $request->is_admin == 'on' ? true : false;
             $data->save();
         });
 
@@ -156,6 +163,7 @@ class StaffController extends Controller
             $data->username = $request->username;
             $data->email = $request->email;
             $data->is_active = $request->is_active == 'on' ? true : false;
+            $data->is_admin = $request->is_admin == 'on' ? true : false;
             $data->save();
         });
 

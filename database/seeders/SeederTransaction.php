@@ -27,7 +27,7 @@ class SeederTransaction extends Seeder
         Transaction::truncate();
         Schema::enableForeignKeyConstraints();
 
-        $case = 2;
+        $case = null;
         switch($case){
             case 1:
                 $start_date = date("Y-m-d H:i:s", strtotime('2021-09-01 00:00:00'));

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 class BrandController extends Controller
 {
+    private $acl = 'brand';
     private $brandModel;
 
     /**
@@ -16,6 +17,11 @@ class BrandController extends Controller
     public function __construct()
     {
         $this->brandModel = new \App\Models\Brand();
+
+        // Spatie ACL
+        $this->middleware('permission:'.$this->acl.'-list', ['only' => ['index', 'show']]);
+        $this->middleware('permission:'.$this->acl.'-create', ['only' => ['create','store']]);
+        $this->middleware('permission:'.$this->acl.'-edit', ['only' => ['edit','update']]);
     }
 
     /**

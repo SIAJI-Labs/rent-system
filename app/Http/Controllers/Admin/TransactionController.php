@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 class TransactionController extends Controller
 {
+    private $acl = 'transaction';
     private $storeModel;
     private $productModel;
     private $customerModel;
@@ -30,6 +31,11 @@ class TransactionController extends Controller
         $this->productDetailModel = new \App\Models\ProductDetail();
         $this->transactionLogModel = new \App\Models\TransactionLog();
         $this->transactionItemModel = new \App\Models\TransactionItem();
+
+        // Spatie ACL
+        $this->middleware('permission:'.$this->acl.'-list', ['only' => ['index', 'show']]);
+        $this->middleware('permission:'.$this->acl.'-create', ['only' => ['create','store']]);
+        $this->middleware('permission:'.$this->acl.'-edit', ['only' => ['edit','update']]);
     }
 
     /**

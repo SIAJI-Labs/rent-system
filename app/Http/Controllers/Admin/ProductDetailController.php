@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 class ProductDetailController extends Controller
 {
+    private $acl = 'product_detail';
     private $storeModel;
     private $productModel;
     private $productDetailModel;
@@ -19,6 +20,11 @@ class ProductDetailController extends Controller
         $this->storeModel = new \App\Models\Store();
         $this->productModel = new \App\Models\Product();
         $this->productDetailModel = new \App\Models\ProductDetail();
+
+        // Spatie ACL
+        $this->middleware('permission:'.$this->acl.'-list', ['only' => ['index', 'show']]);
+        $this->middleware('permission:'.$this->acl.'-create', ['only' => ['create','store']]);
+        $this->middleware('permission:'.$this->acl.'-edit', ['only' => ['edit','update']]);
     }
 
     /**

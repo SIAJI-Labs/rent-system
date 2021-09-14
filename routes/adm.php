@@ -71,6 +71,10 @@ Route::group([
         Route::resource('customer', \CustomerController::class);
         // Store
         Route::resource('store', \StoreController::class);
+        // Staff Permission
+        Route::resource('staff/{id}/permission', \StaffPermissionController::class)->only([
+            'index', 'store'
+        ]);
         // Staff
         Route::resource('staff', \StaffController::class);
 
@@ -86,6 +90,11 @@ Route::group([
         // Website Configuration
         Route::resource('website-configuration', \WebsiteConfiguration::class)->only([
             'index', 'store'
+        ]);
+
+        // Profile
+        Route::resource('profile', \ProfileController::class)->only([
+            'index', 'update'
         ]);
 
         /**

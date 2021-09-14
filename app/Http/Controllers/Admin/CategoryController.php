@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
+    private $acl = 'category';
     private $categoryModel;
     private $fileLocation = 'images/category';
 
@@ -20,6 +21,11 @@ class CategoryController extends Controller
     public function __construct()
     {
         $this->categoryModel = new \App\Models\Category();
+
+        // Spatie ACL
+        $this->middleware('permission:'.$this->acl.'-list', ['only' => ['index', 'show']]);
+        $this->middleware('permission:'.$this->acl.'-create', ['only' => ['create','store']]);
+        $this->middleware('permission:'.$this->acl.'-edit', ['only' => ['edit','update']]);
     }
 
     /**

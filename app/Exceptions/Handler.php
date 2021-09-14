@@ -39,6 +39,14 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+
+        // Spatie
+        $this->renderable(function (\Spatie\Permission\Exceptions\UnauthorizedException $e, $request) {
+            return response()->view('content.adm.exception', [
+                'error_type' => 'spatie',
+                'exception' => 'Maaf, anda tidak memiliki ijin untuk mengakses data terkait!'
+            ]);
+        });
     }
 
     /**

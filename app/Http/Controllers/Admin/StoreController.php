@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 class StoreController extends Controller
 {
+    private $acl = 'store';
     private $storeModel;
     /**
      * Instantiate a new StoreController instance.
@@ -15,6 +16,11 @@ class StoreController extends Controller
     public function __construct()
     {
         $this->storeModel = new \App\Models\Store();
+
+        // Spatie ACL
+        $this->middleware('permission:'.$this->acl.'-list', ['only' => ['index', 'show']]);
+        $this->middleware('permission:'.$this->acl.'-create', ['only' => ['create','store']]);
+        $this->middleware('permission:'.$this->acl.'-edit', ['only' => ['edit','update']]);
     }
 
     /**

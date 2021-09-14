@@ -89,6 +89,12 @@
                 <label class="custom-control-label" for="input-is_active">Staff Tidak Aktif</label>
             </div>
         </div>
+        <div class="form-group">
+            <div class="custom-control custom-switch">
+                <input type="checkbox" class="custom-control-input" name="is_admin" id="input-is_admin">
+                <label class="custom-control-label" for="input-is_admin">Staff</label>
+            </div>
+        </div>
     </div>
     <!-- /.card-body -->
     <div class="card-footer">
@@ -193,6 +199,16 @@
         let text = 'Staff Tidak Aktif';
         if($(e.target).is(':checked')){
             text = 'Staff Aktif';
+        }
+        $(label).text(text);
+    });
+    $("#input-is_admin").change((e) => {
+        let formGroup = $(e.target).closest('.form-group');
+        let label = $(formGroup).find('label');
+
+        let text = 'Staff';
+        if($(e.target).is(':checked')){
+            text = 'Super Admin';
         }
         $(label).text(text);
     });

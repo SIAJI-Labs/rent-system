@@ -24,7 +24,7 @@ class SeederUser extends Seeder
             'username' => 'user',
             'email' => 'user@mail.com',
             'password' => bcrypt('user'),
-            'is_active' => true
+            'is_active' => true,
         ]);
     }
 }

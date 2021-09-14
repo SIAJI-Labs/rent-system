@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 
 class CustomerController extends Controller
 {
+    private $acl = 'customer';
     private $customerModel;
     private $customerContactModel;
     private $customerMortgageModel;
@@ -24,6 +25,11 @@ class CustomerController extends Controller
         $this->customerModel = new \App\Models\Customer();
         $this->customerContactModel = new \App\Models\CustomerContact();
         $this->customerMortgageModel = new \App\Models\CustomerMortgage();
+
+        // Spatie ACL
+        $this->middleware('permission:'.$this->acl.'-list', ['only' => ['index', 'show']]);
+        $this->middleware('permission:'.$this->acl.'-create', ['only' => ['create','store']]);
+        $this->middleware('permission:'.$this->acl.'-edit', ['only' => ['edit','update']]);
     }
 
     /**

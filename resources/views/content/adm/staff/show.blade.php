@@ -39,6 +39,9 @@
             <a href="{{ route('adm.staff.edit', $data->uuid) }}" class="btn btn-sm btn-warning" data-toggle="tooltip" title="Edit Data Staff">
                 <i class="far fa-edit mr-1"></i> Edit
             </a>
+            <a href="{{ route('adm.permission.index', $data->uuid) }}" class="btn btn-sm btn-info" data-toggle="tooltip" title="Ijin Akses Staff">
+                <i class="fas fa-lock mr-1"></i> Ijin Akses
+            </a>
         </div>
     </div>
     <div class="card-body">

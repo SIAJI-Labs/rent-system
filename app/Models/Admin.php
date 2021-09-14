@@ -6,9 +6,11 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
 
 class Admin extends Authenticatable
 {
+    use HasRoles;
     use HasFactory, Notifiable;
 
     /**
@@ -23,7 +25,8 @@ class Admin extends Authenticatable
         'email',
         'password',
         'raw_password',
-        'is_active'
+        'is_active',
+        'is_admin'
     ];
 
     /**

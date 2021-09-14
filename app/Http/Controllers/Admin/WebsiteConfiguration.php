@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 
 class WebsiteConfiguration extends Controller
 {
+    private $acl = 'website_configuration';
     private $websiteConfigurationModel;
     private $fileLocation = 'images';
 
@@ -20,6 +21,11 @@ class WebsiteConfiguration extends Controller
     public function __construct()
     {
         $this->websiteConfigurationModel = new \App\Models\WebsiteConfiguration();
+
+        // Spatie ACL
+        $this->middleware('permission:'.$this->acl.'-list', ['only' => ['index', 'show']]);
+        $this->middleware('permission:'.$this->acl.'-create', ['only' => ['create','store']]);
+        $this->middleware('permission:'.$this->acl.'-edit', ['only' => ['edit','update']]);
     }
 
     /**
