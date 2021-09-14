@@ -13,9 +13,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('index');
+Route::group([
+    'as' => 'public.'
+], function(){
+    Route::get('/', function () {
+        return view('content.public.homepage.index');
+    })->name('index');
+});
 
 Auth::routes();
 
