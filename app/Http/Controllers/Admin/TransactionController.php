@@ -136,6 +136,8 @@ class TransactionController extends Controller
         }
 
         \DB::transaction(function () use ($request) {
+            $customer = $this->customerModel->findOrFail($request->customer_id);
+
             // Product
             $sum_price = 0;
             $sum_discount = 0;
@@ -162,7 +164,7 @@ class TransactionController extends Controller
             $data = $this->transactionModel;
             $data->user_id = \Auth::user()->id;
             $data->store_id = $request->store_id;
-            $data->customer_id = $request->customer_id;
+            $data->customer_id = $customer->id;
             $data->invoice = $invoice;
             $data->date = date("Y-m-d H:i:s");
             $data->start_date = date("Y-m-d H:i:00", strtotime(explode('-', $request->daterange)[0]));
@@ -200,6 +202,14 @@ class TransactionController extends Controller
                 $lastAuditItem->extra_type = get_class($transactionLog);
                 $lastAuditItem->extra_id = $transactionLog->id;
                 $lastAuditItem->save();
+            }
+
+            // Send an Email
+            if(!empty($customer->email) && $request->has('invoiceEmail')){
+                $mail = $customer->email;
+                $mailable = new \App\Mail\Transaction\TransactionCheckout($data);
+                $mailJob = dispatch(new \App\Jobs\SendEmailJob($mail, $mailable))
+                    ->delay(\Carbon\Carbon::now()->addSeconds(10)); // Add some delay
             }
         });
 

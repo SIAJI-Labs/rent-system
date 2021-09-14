@@ -411,6 +411,15 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="form-group row justify-content-end">
+                    <div class="col-sm-8">
+                        <div class="custom-control custom-checkbox">
+                            <input class="custom-control-input" type="checkbox" id="input-invoiceEmail" name="invoiceEmail" checked="">
+                            <label for="input-invoiceEmail" class="custom-control-label">Generate Invoice dan Kirim Email Checkout</label>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

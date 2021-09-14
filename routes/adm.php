@@ -48,6 +48,19 @@ Route::group([
             ]);
         })->name('protected.images');
 
+        Route::group([
+            'prefix' => 'manual',
+            'as' => 'manual.'
+        ], function(){
+            Route::get('send-checkout', function(){
+                $mail = 'dwiaji.personal@gmail.com';
+                $mailable = new \App\Mail\Transaction\TransactionCheckout([]);
+                $mail = dispatch(new \App\Jobs\SendEmailJob($mail, $mailable))->delay(\Carbon\Carbon::now()->addSeconds(10));
+
+                return response()->json('ok');
+            });
+        });
+
         // Home / Dashboard
         Route::get('/', 'HomeController')->name('index');
 
