@@ -67,10 +67,12 @@ Route::group([
         });
         Route::resource('product', \ProductController::class);
 
-        // Store
-        Route::resource('store', \StoreController::class);
         // Customer
         Route::resource('customer', \CustomerController::class);
+        // Store
+        Route::resource('store', \StoreController::class);
+        // Staff
+        Route::resource('staff', \StaffController::class);
 
         // Transaction
         Route::resource('transaction', \TransactionController::class);
@@ -81,6 +83,11 @@ Route::group([
         Route::get('accounting/{year}', [\App\Http\Controllers\Admin\AccountingController::class, 'monthly'])->name('accounting.monthly');
         Route::get('accounting', [\App\Http\Controllers\Admin\AccountingController::class, 'yearly'])->name('accounting.yearly');
 
+        // Website Configuration
+        Route::resource('website-configuration', \WebsiteConfiguration::class)->only([
+            'index', 'store'
+        ]);
+
         /**
          * Json Data
          * 
@@ -89,6 +96,18 @@ Route::group([
             'prefix' => 'json',
             'as' => 'json.'
         ], function(){
+            // Home - Statistic
+            Route::group([
+                'prefix' => 'statistic',
+                'as' => 'statistic.'
+            ], function(){
+                // Transaction
+                Route::get('transaction', [\App\Http\Controllers\Admin\HomeStatisticController::class, 'jsonTransactionStatistic'])->name('transaction');
+                // Cashflow
+                Route::get('cashflow', [\App\Http\Controllers\Admin\HomeStatisticController::class, 'jsonCashflowStatistic'])->name('cashflow');
+            });
+            Route::get('transaction-list', [\App\Http\Controllers\Admin\HomeStatisticController::class, 'jsonTransactionList'])->name('transaction.list');
+
             Route::get('transaction/{transactionId}/item', [\App\Http\Controllers\Admin\TransactionItemController::class, 'jsonIndex'])->name('transaction.item.index');
             Route::get('transaction/{transactionId}/item/{id}', [\App\Http\Controllers\Admin\TransactionItemController::class, 'jsonShow'])->name('transaction.item.show');
 
@@ -135,10 +154,12 @@ Route::group([
                 });
                 Route::get('product', [\App\Http\Controllers\Admin\ProductController::class, 'datatableAll'])->name('product.all');
 
-                // Store
-                Route::get('store', [\App\Http\Controllers\Admin\StoreController::class, 'datatableAll'])->name('store.all');
                 // Customer
                 Route::get('customer', [\App\Http\Controllers\Admin\CustomerController::class, 'datatableAll'])->name('customer.all');
+                // Store
+                Route::get('store', [\App\Http\Controllers\Admin\StoreController::class, 'datatableAll'])->name('store.all');
+                // Staff
+                Route::get('staff', [\App\Http\Controllers\Admin\StaffController::class, 'datatableAll'])->name('staff.all');
 
                 // Transaction Item
                 Route::get('transaction/{transactionId}/item', [\App\Http\Controllers\Admin\TransactionItemController::class, 'datatableAll'])->name('transaction.item.all');

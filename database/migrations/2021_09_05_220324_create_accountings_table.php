@@ -31,7 +31,7 @@ return new class extends Migration
                 ->cascadeOnDelete();
             $table->foreign('user_id')
                 ->references('id')
-                ->on('users')
+                ->on('admins')
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
             $table->foreign('store_id')

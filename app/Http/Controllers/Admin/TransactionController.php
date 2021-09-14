@@ -65,6 +65,12 @@ class TransactionController extends Controller
             $product_arr[$key]['price'] = (int) filter_var($value['price'], FILTER_SANITIZE_NUMBER_INT);
             $product_arr[$key]['discount'] = (int) filter_var($value['discount'], FILTER_SANITIZE_NUMBER_INT);
         }
+
+        $store_id = $request->store_id;
+        if(\Auth::guard('admin')->check() && !empty(\Auth::guard('admin')->user()->store_id)){
+            $store_id = (string) \Auth::guard('admin')->user()->store_id;
+        }
+
         $request->merge([
             'product' => $product_arr,
             'sum_price' => (int) filter_var($request->sum_price, FILTER_SANITIZE_NUMBER_INT),
@@ -74,6 +80,7 @@ class TransactionController extends Controller
             'sum_amount' => (int) filter_var($request->sum_amount, FILTER_SANITIZE_NUMBER_INT),
             'paid' => (int) filter_var($request->paid, FILTER_SANITIZE_NUMBER_INT),
             'leftover' => (int) filter_var($request->leftover, FILTER_SANITIZE_NUMBER_INT),
+            'store_id' => $store_id
         ]);
 
         $request->validate([
@@ -91,9 +98,9 @@ class TransactionController extends Controller
             'store_id.required' => 'Field Toko wajib diisi!', 
             'store_id.string' => 'Nilai pada Field Toko tidak valid!', 
             'store_id.exists' => 'Nilai pada Field Toko tidak tersedia!', 
-            'customer_id.required' => 'Field Toko wajib diisi!', 
-            'customer_id.string' => 'Nilai pada Field Toko tidak valid!', 
-            'customer_id.exists' => 'Nilai pada Field Toko tidak tersedia!', 
+            'customer_id.required' => 'Field Kostumer wajib diisi!', 
+            'customer_id.string' => 'Nilai pada Field Kostumer tidak valid!', 
+            'customer_id.exists' => 'Nilai pada Field Kostumer tidak tersedia!', 
             'daterange.required' => 'Field Periode Sewa wajib diisi!',
             'daterange.string' => 'Nilai pada Field Periode Sewa tidak valid!',
             'type.required' => 'Field Jenis Transaksi wajib diisi!', 

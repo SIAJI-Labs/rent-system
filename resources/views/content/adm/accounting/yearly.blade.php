@@ -97,6 +97,7 @@
         let dataset = [];
         let tempData = [];
 
+        console.log(data);
         // Make sure if data is exists
         if(data.length > 0){
             data.forEach((e) => {
@@ -136,6 +137,7 @@
             });
         }
 
+        console.log(`Temp Data`, tempData);
         // Get Dataset
         let tempDataset = tempData.reduce(function (r, a) {
             r[a.name] = r[a.name] || [];

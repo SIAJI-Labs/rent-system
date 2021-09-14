@@ -24,6 +24,7 @@ class SeederAdmin extends Seeder
             'username' => 'admin',
             'email' => 'admin@mail.com',
             'password' => bcrypt('admin'),
+            'raw_password' => saEncryption('admin'),
             'is_active' => true
         ]);
     }

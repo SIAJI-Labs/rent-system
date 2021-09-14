@@ -60,6 +60,10 @@ class Store extends Model
      * 
      * @return model
      */
+    public function staff()
+    {
+        return $this->hasMany(\App\Models\Staff::class, 'store_id');
+    }
     public function productDetail()
     {
         return $this->hasMany(\App\Models\ProductDetail::class, 'store_id');

@@ -67,9 +67,13 @@
                     <input type="hidden" name="old_store_id" value="{{ old('old_store_id') }}" id="input-old_store_id" readonly>
                     <input type="hidden" name="old_store_id_text" value="{{ old('old_store_id_text') }}" id="input-old_store_id_text" readonly>
 
-                    <select class="form-control @error('store_id') is-invalid @enderror" id="input-store_id" name="store_id" style="width: 100% !important;">
-                        @if(old('old_store_id'))
-                        <option value="{{ old('old_store_id') }}" selected>{{ old('old_store_id_text') }}</option>
+                    <select class="form-control @error('store_id') is-invalid @enderror" id="input-store_id" name="store_id" style="width: 100% !important;" {{ \Auth::guard('admin')->check() && !empty(\Auth::guard('admin')->user()->store_id) ? 'disabled' : '' }}>
+                        @if (\Auth::guard('admin')->check() && !empty(\Auth::guard('admin')->user()->store_id))
+                            <option value="{{ \Auth::guard('admin')->user()->store_id }}" selected>{{ \Auth::guard('admin')->user()->store->name }}</option>
+                        @else
+                            @if(old('old_store_id'))
+                            <option value="{{ old('old_store_id') }}" selected>{{ old('old_store_id_text') }}</option>
+                            @endif
                         @endif
                     </select>
                     @error('store_id')
@@ -646,7 +650,7 @@
         let days = $("#input-periode").inputmask('unmaskedvalue');
 
         calc = ((parseInt(sum) - parseInt(discount)) * parseInt(days)) + parseInt(extra_charge);
-        console.log("Calc", calc);
+        // console.log("Calc", calc);
         $("#input-sum_amount").val(calc ?? 0);
         calculateLeftOver();
     }

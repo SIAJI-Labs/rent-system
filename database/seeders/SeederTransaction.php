@@ -27,19 +27,24 @@ class SeederTransaction extends Seeder
         Transaction::truncate();
         Schema::enableForeignKeyConstraints();
 
-        $case = null;
+        $case = 2;
         switch($case){
             case 1:
-                $start_date = date("Y-m-d H:i:s", strtotime('2021-01-05 00:00:00'));
-                for($i = 0; $i < 0; $i++){
-                    $end_date = date("Y-m-d H:i:s", strtotime($start_date.' +2 days'));
+                $start_date = date("Y-m-d H:i:s", strtotime('2021-09-01 00:00:00'));
+                for($i = 0; $i < 100; $i++){
+                    $duration = rand(1, 5);
+                    $end_date = date("Y-m-d H:i:s", strtotime($start_date.' +'.$duration.' days'));
 
                     \DB::transaction(function () use ($start_date, $end_date, $i) {
                         $store = \App\Models\Store::first();
 
                         $status = 'booking';
                         if($start_date < date("Y-m-d H:i:s")){
-                            $status = 'complete';
+                            if($end_date > date("Y-m-d H:i:s")){
+                                $status = 'process';
+                            } else {
+                                $status = 'complete';
+                            }
                         }
 
                         $prefix = 'INVC';
@@ -91,7 +96,7 @@ class SeederTransaction extends Seeder
                 break;
             case 2:
                 $invoiceNumber = 1;
-                $start_date = date("Y-m-d H:i:s", strtotime("2015-01-01 00:00:00"));
+                $start_date = date("Y-m-d H:i:s", strtotime("2020-01-01 00:00:00"));
 
                 do {
                     // Configuration (Time)

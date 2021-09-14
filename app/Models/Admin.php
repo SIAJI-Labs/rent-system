@@ -17,10 +17,12 @@ class Admin extends Authenticatable
      * @var array
      */
     protected $fillable = [
+        'store_id',
         'name',
         'username',
         'email',
         'password',
+        'raw_password',
         'is_active'
     ];
 
@@ -60,12 +62,28 @@ class Admin extends Authenticatable
      * 
      * @return model
      */
+    public function transaction()
+    {
+        return $this->hasMany(\App\Models\Transaction::class, 'user_id');
+    }
+    public function transactionLog()
+    {
+        return $this->hasMany(\App\Models\TransactionLog::class, 'user_id');
+    }
+    public function accounting()
+    {
+        return $this->hasMany(\App\Models\Accounting::class, 'user_id');
+    }
 
     /**
      * Foreign Key Relation
      * 
      * @return model
      */
+    public function store()
+    {
+        return $this->belongsTo(\App\Models\Store::class, 'store_id');
+    }
 
     /**
      * The "boot" method of the model.

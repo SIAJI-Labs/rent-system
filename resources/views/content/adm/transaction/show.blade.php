@@ -42,6 +42,33 @@
         </div>
     </div>
     <div class="card-body">
+        @php
+            $currDate = date("Y-m-d");
+            $startDate = $data->start_date;
+            $endDate = $data->end_date;
+        @endphp
+        @if ($data->status == 'process')
+            @if ($currDate == date("Y-m-d", strtotime($endDate)) && (date("H:i:s") < date("H:i:s", strtotime($endDate))))
+                <div class="alert alert-warning" role="alert">
+                    Transaksi mendekati batas periode sewa yang telah ditentukan!
+                </div>
+            @elseif(date("H:i:s") > date("H:i:s", strtotime($endDate)))
+                <div class="alert alert-danger" role="alert">
+                    Transaksi melebihi periode sewa yang telah ditentukan!
+                </div>
+            @endif
+        @elseif($data->status == 'booking')
+            @if ($currDate == date("Y-m-d", strtotime($startDate)) && (date("H:i:s") < date("H:i:s", strtotime($endDate))))
+                <div class="alert alert-primary" role="alert">
+                    Transaksi mendekati awal periode sewa!
+                </div>
+            @elseif(date("H:i:s") > date("H:i:s", strtotime($startDate)))
+                <div class="alert alert-secondary" role="alert">
+                    Transaksi belum diproses dan sudah melebihi awal periode sewa!
+                </div>
+            @endif
+        @endif
+
         <table class="table table-bordered table-hover">
             <tr>
                 <th>Invoice</th>

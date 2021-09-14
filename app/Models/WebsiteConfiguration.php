@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Accounting extends Model
+class WebsiteConfiguration extends Model
 {
     use HasFactory;
 
@@ -15,12 +15,8 @@ class Accounting extends Model
      * @var array
      */
     protected $fillable = [
-        'store_id',
-        'user_id',
-        'transaction_id',
-        'type',
-        'amount',
-        'sum_amount'
+        'key',
+        'value'
     ];
 
     /**
@@ -62,18 +58,6 @@ class Accounting extends Model
      * 
      * @return model
      */
-    public function store()
-    {
-        return $this->belongsTo(\App\Models\Store::class, 'store_id');
-    }
-    public function user()
-    {
-        return $this->belongsTo(\App\Models\Admin::class, 'user_id');
-    }
-    public function transaction()
-    {
-        return $this->belongsTo(\App\Models\Transaction::class, 'transaction_id');
-    }
 
     /**
      * The "boot" method of the model.

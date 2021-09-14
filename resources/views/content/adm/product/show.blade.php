@@ -30,7 +30,7 @@
 @section('content')
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title">Detail Kategori</h3>
+        <h3 class="card-title">Detail Produk</h3>
 
         <div class="card-tools btn-group">
             <a href="{{ route('adm.product.index') }}" class="btn btn-sm btn-secondary" data-toggle="tooltip" title="Kembali ke Daftar Produk">

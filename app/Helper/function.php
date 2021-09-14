@@ -74,6 +74,40 @@ function generateInvoice($storePrefix = null)
 }
 
 /**
+ * Generate Random String
+ * 
+ * @return String
+ */
+function generateRandomString($length = 6)
+{
+    $numeric = range(0, 9);
+    $alpha = range('a', 'z');
+    $alpha_b = range('A', 'Z');
+
+    // Shuffle Sets
+    shuffle($numeric);
+    shuffle($alpha);
+    shuffle($alpha_b);
+
+    // First Shuffle (before join)
+    $numeric = range(0, 9);
+    $alpha = range('a', 'z');
+    $alpha_b = range('A', 'Z');
+    // Join Array
+    $mix = implode("", $numeric).implode("", $alpha).implode("", $alpha_b);
+    // Shuffle Joined Array
+    $mix_shuffle = str_shuffle($mix);
+
+    // Generate Random Character
+    $string = '';
+    for($i = 0; $i < $length; $i++){
+        $string .= $mix_shuffle[rand(0, $length - 1)];
+    }
+    
+    return $string;
+}
+
+/**
  * Audit Column Rename
  * 
  * @param Class $className

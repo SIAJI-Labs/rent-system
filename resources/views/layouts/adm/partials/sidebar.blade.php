@@ -78,6 +78,14 @@
 
                 <li class="nav-header">DATA MASTER</li>
                 <li class="nav-item">
+                    <a href="{{ route('adm.customer.index') }}" class="nav-link d-flex align-items-center {{ !empty($sidebar_menu) ? ($sidebar_menu == 'customer' ? 'active' : '') : '' }}">
+                        <i class="nav-icon fas fa-users"></i>
+                        <p>
+                            Kostumer
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="{{ route('adm.store.index') }}" class="nav-link d-flex align-items-center {{ !empty($sidebar_menu) ? ($sidebar_menu == 'store' ? 'active' : '') : '' }}">
                         <i class="nav-icon fas fa-home"></i>
                         <p>
@@ -86,15 +94,24 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('adm.customer.index') }}" class="nav-link d-flex align-items-center {{ !empty($sidebar_menu) ? ($sidebar_menu == 'customer' ? 'active' : '') : '' }}">
-                        <i class="nav-icon fas fa-users"></i>
+                    <a href="{{ route('adm.staff.index') }}" class="nav-link d-flex align-items-center {{ !empty($sidebar_menu) ? ($sidebar_menu == 'staff' ? 'active' : '') : '' }}">
+                        <i class="nav-icon fas fa-user"></i>
                         <p>
-                            Kostumer
+                            Staff
                         </p>
                     </a>
                 </li>
 
                 <li class="nav-header">MISCELLANEOUS</li>
+
+                <li class="nav-item">
+                    <a href="{{ route('adm.website-configuration.index') }}" class="nav-link d-flex align-items-center {{ !empty($sidebar_menu) ? ($sidebar_menu == 'website-configuration' ? 'active' : '') : '' }}">
+                        <i class="nav-icon fas fa-cog"></i>
+                        <p>
+                            Pengaturan Website
+                        </p>
+                    </a>
+                </li>
                 <li class="nav-item">
                     <a href="{{ route('larecipe.index') }}" class="nav-link d-flex align-items-center" target="_blank">
                         <i class="nav-icon far fa-circle text-info"></i>

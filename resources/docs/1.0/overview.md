@@ -69,7 +69,7 @@ Untuk menunjang tujuan dari Aplikasi, tersedia beberapa fitur yang dapat digunak
 <a name="credit"></a>
 ## Kredit
 
-Aplikasi ini menggunakan beberapa *open-source* *libraries* / *packages* pihak ke-3, terimakasih banyak kepada developer dan komunitas terkait
+Aplikasi ini menggunakan beberapa *open-source* *libraries* dan/atau *packages* pihak ke-3, terimakasih banyak kepada developer dan komunitas terkait.
 
 - [Laravel](https://laravel.com) - Open source full-stack framework.
 - [Tailwind CSS](https://tailwindcss.com) - A utility-first CSS framework for rapidly building custom user interfaces.

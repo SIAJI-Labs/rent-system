@@ -104,7 +104,7 @@ class Transaction extends Model implements Auditable
      */
     public function user()
     {
-        return $this->belongsTo(\App\models\User::class, 'user_id');
+        return $this->belongsTo(\App\Models\Admin::class, 'user_id');
     }
     public function store()
     {

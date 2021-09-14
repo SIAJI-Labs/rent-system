@@ -26,7 +26,7 @@
 @section('content')
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title">Daftar Toko</h3>
+        <h3 class="card-title">Daftar Transaksi</h3>
 
         <div class="card-tools btn-group">
             <a href="{{ route('adm.transaction.create') }}" class="btn btn-sm btn-primary" data-toggle="tooltip" title="Tambah Baru">
@@ -47,6 +47,36 @@
                 </tr>
             </thead>
         </table>
+
+        <div class="card mb-0 mt-4 collapsed-card">
+            <div class="card-header">
+                <h3 class="card-title">Legend</h3>
+
+                <div class="card-tools">
+                    <button type="button" class="btn btn-primary btn-sm" data-card-widget="collapse" title="Collapse">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body" style="display: none;">
+                <div>
+                    <span class="badge bg-secondary"><small class="text-secondary">XX</small></span>
+                    <span><span class="badge badge-warning">Booking</span> Transaksi belum diproses dan sudah melebihi awal periode sewa!</span>
+                </div>
+                <div>
+                    <span class="badge bg-primary"><small class="text-primary">XX</small></span>
+                    <span><span class="badge badge-warning">Booking</span> Transaksi mendekati awal periode sewa!</span>
+                </div>
+                <div>
+                    <span class="badge bg-warning"><small class="text-warning">XX</small></span>
+                    <span><span class="badge badge-primary">Proses</span> Transaksi mendekati batas periode sewa yang telah ditentukan!</span>
+                </div>
+                <div>
+                    <span class="badge bg-danger"><small class="text-danger">XX</small></span>
+                    <span><span class="badge badge-primary">Proses</span> Transaksi melebihi periode sewa yang telah ditentukan!</span>
+                </div>
+            </div>
+        </div>
     </div>
     <!-- /.card-body -->
     <div class="card-footer">
@@ -97,7 +127,7 @@
                         return `
                             <span>${row}</span>
                             <hr class="my-1"/>
-                            <small>Created at: ${moment(data.created_at).format('Do MMMM YYYY, HH:mm')}/ #${data.id}</small>
+                            <small>Transaksi pada: ${moment(data.created_at).format('Do MMMM YYYY, HH:mm')}/ #${data.id}</small>
                         `;
                     }
                 }, {
@@ -148,14 +178,21 @@
                 }
             ],
             createdRow: ( row, data, dataIndex) => {
-                let currDate = moment().format("Do-MM-YYYY");
-                let endDate = moment(data.end_date).format("Do-MM-YYYY");
+                let currDate = moment();
+                let startDate = moment(data.start_date);
+                let endDate = moment(data.end_date);
                 
                 if(data.status == 'process'){
-                    if(currDate == endDate){
+                    if(moment(currDate).format('Do-MM-YYYY') == moment(endDate).format('Do-MM-YYYY') && moment(currDate).format("HH:mm:ss") < moment(endDate).format('HH:mm:ss')){
                         $(row).addClass('table-warning');
                     } else if(currDate > endDate){
                         $(row).addClass('table-danger');
+                    }
+                } else if (data.status == 'booking'){
+                    if(moment(currDate).format('Do-MM-YYYY') == moment(startDate).format('Do-MM-YYYY') && moment(currDate).format("HH:mm:ss") < moment(startDate).format('HH:mm:ss')){
+                        $(row).addClass('table-primary');
+                    } else if(currDate > startDate){
+                        $(row).addClass('table-secondary');
                     }
                 }
             }
