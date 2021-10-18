@@ -36,9 +36,12 @@
             <a href="{{ route('adm.product.brand.index') }}" class="btn btn-sm btn-secondary" data-toggle="tooltip" title="Kembali ke Daftar Merek">
                 <i class="far fa-arrow-alt-circle-left mr-1"></i> Kembali
             </a>
-            <a href="{{ route('adm.product.brand.edit', $data->uuid) }}" class="btn btn-sm btn-warning" data-toggle="tooltip" title="Edit Data Merek">
-                <i class="far fa-edit mr-1"></i> Edit
-            </a>
+
+            @can('brand-edit')
+                <a href="{{ route('adm.product.brand.edit', $data->uuid) }}" class="btn btn-sm btn-warning" data-toggle="tooltip" title="Edit Data Merek">
+                    <i class="far fa-edit mr-1"></i> Edit
+                </a>
+            @endcan
         </div>
     </div>
     <div class="card-body">

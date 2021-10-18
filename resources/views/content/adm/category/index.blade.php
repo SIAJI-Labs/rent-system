@@ -30,11 +30,13 @@
     <div class="card-header">
         <h3 class="card-title">Daftar Kategori</h3>
 
-        <div class="card-tools btn-group">
-            <a href="{{ route('adm.product.category.create') }}" class="btn btn-sm btn-primary" data-toggle="tooltip" title="Tambah Baru">
-                <i class="fas fa-plus mr-1"></i> Tambah Baru
-            </a>
-        </div>
+        @can('category-create')
+            <div class="card-tools btn-group">
+                <a href="{{ route('adm.product.category.create') }}" class="btn btn-sm btn-primary" data-toggle="tooltip" title="Tambah Baru">
+                    <i class="fas fa-plus mr-1"></i> Tambah Baru
+                </a>
+            </div>
+        @endcan
     </div>
     <div class="card-body">
         <table class="table table-hover table-striped table-bordered" id="category-table">
@@ -115,14 +117,19 @@
                     "searchable": false,
                     "orderable": false,
                     "render": (row, type, data) => {
+                        let extra = '';
+                        @can('category-edit')
+                            extra = `<a href="{{ route('adm.product.category.index') }}/${data.uuid}/edit" class="btn btn-sm btn-warning btn-action">
+                                    <i class="far fa-edit mr-1"></i> Edit
+                                </a>`;
+                        @endcan
+
                         return `
                             <div class="btn-group">
                                 <a href="{{ route('adm.product.category.index') }}/${data.uuid}" class="btn btn-sm btn-primary btn-action">
                                     <i class="fas fa-eye mr-1"></i> Detail
                                 </a>
-                                <a href="{{ route('adm.product.category.index') }}/${data.uuid}/edit" class="btn btn-sm btn-warning btn-action">
-                                    <i class="far fa-edit mr-1"></i> Edit
-                                </a>
+                                ${extra}
                             </div>
                         `;
                     }

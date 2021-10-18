@@ -299,7 +299,15 @@
             </div>
         </div>
 
-        <div class="row justify-content-end">
+        <div class="row @if(!($data->status == 'process' && $data->must_end_date < date("Y-m-d H:i:s"))) justify-content-end @endif">
+            @if ($data->status == 'process' && $data->must_end_date < date("Y-m-d H:i:s"))
+                <div class="col-12 col-lg-6">
+                    <div class="alert alert-warning">
+                        <h5><i class="icon fas fa-exclamation-triangle"></i> Pengembalian Terlambat!</h5>
+                        Barang dijadwalkan kembali pada {{ date("d F Y, H:s", strtotime($data->end_date)) }} (Terlambat {{ round((strtotime(date("Y-m-d H:i:s")) - strtotime($data->end_date)) / (60 * 60 * 24)) }} hari)
+                      </div>
+                </div>
+            @endif
             <div class="col-12 col-lg-6">
                 <div class="form-group row align-items-center">
                     <label class="col-sm-4 col-form-label">Jumlah Biaya</label>

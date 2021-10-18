@@ -14,6 +14,11 @@ mark, .mark {
     vertical-align: middle !important;
 }
 
+// Select2
+.select2-container--bootstrap4 .select2-results__option[aria-disabled=true] {
+    color: #999;
+    cursor: no-drop; }
+
 // AdminLTE
 .brand-link {
     .brand-image {

@@ -170,7 +170,9 @@ return [
         Yajra\DataTables\DataTablesServiceProvider::class,
         OwenIt\Auditing\AuditingServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
-        
+        // Barryvdh\DomPDF\ServiceProvider::class,
+        Meneses\LaravelMpdf\LaravelMpdfServiceProvider::class,
+
         /*
          * Application Service Providers...
          */
@@ -235,6 +237,8 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
+        // 'PDF' => Barryvdh\DomPDF\Facade::class,
+        'PDF' => Meneses\LaravelMpdf\Facades\LaravelMpdf::class
     ],
 
 ];

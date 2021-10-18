@@ -36,9 +36,11 @@
             <a href="{{ route('adm.product.index') }}" class="btn btn-sm btn-secondary" data-toggle="tooltip" title="Kembali ke Daftar Produk">
                 <i class="far fa-arrow-alt-circle-left mr-1"></i> Kembali
             </a>
-            <a href="{{ route('adm.product.edit', $data->uuid) }}" class="btn btn-sm btn-warning" data-toggle="tooltip" title="Edit Data Produk">
-                <i class="far fa-edit mr-1"></i> Edit
-            </a>
+            @can('product-edit')
+                <a href="{{ route('adm.product.edit', $data->uuid) }}" class="btn btn-sm btn-warning" data-toggle="tooltip" title="Edit Data Produk">
+                    <i class="far fa-edit mr-1"></i> Edit
+                </a>
+            @endcan
         </div>
     </div>
     <div class="card-body">
@@ -81,11 +83,13 @@
             <div class="card-header">
                 <h3 class="card-title">Serial Number</h3>
         
-                <div class="card-tools btn-group">
-                    <a href="{{ route('adm.product.serial-number.create', $data->uuid) }}" class="btn btn-sm btn-primary" data-toggle="tooltip" title="Tambah Serial Number">
-                        <i class="fas fa-plus mr-1"></i> Tambah Serial Number
-                    </a>
-                </div>
+                @can('product_detail-create')
+                    <div class="card-tools btn-group">
+                        <a href="{{ route('adm.product.serial-number.create', $data->uuid) }}" class="btn btn-sm btn-primary" data-toggle="tooltip" title="Tambah Serial Number">
+                            <i class="fas fa-plus mr-1"></i> Tambah Serial Number
+                        </a>
+                    </div>
+                @endcan
             </div>
             <div class="card-body">
                 <table class="table table-hover table-striped table-bordered" id="serial_number-table">
@@ -152,14 +156,19 @@
                     "searchable": false,
                     "orderable": false,
                     "render": (row, type, data) => {
+                        let extra = '';
+                        @can('product_detail-edit')
+                            extra = `<a href="{{ route('adm.product.serial-number.store', $data->uuid) }}/${data.uuid}/edit" class="btn btn-sm btn-warning btn-action">
+                                    <i class="far fa-edit mr-1"></i> Edit
+                                </a>`;
+                        @endcan
+
                         return `
                             <div class="btn-group">
                                 <a href="javascript:void(0)" class="btn btn-sm btn-primary btn-action">
                                     <i class="fas fa-eye mr-1"></i> Detail
                                 </a>
-                                <a href="{{ route('adm.product.serial-number.store', $data->uuid) }}/${data.uuid}/edit" class="btn btn-sm btn-warning btn-action">
-                                    <i class="far fa-edit mr-1"></i> Edit
-                                </a>
+                                ${extra}
                             </div>
                         `;
                     }

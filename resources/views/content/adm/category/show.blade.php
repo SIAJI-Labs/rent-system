@@ -38,9 +38,11 @@
             <a href="{{ route('adm.product.category.index') }}" class="btn btn-sm btn-secondary" data-toggle="tooltip" title="Kembali ke Daftar Kategori">
                 <i class="far fa-arrow-alt-circle-left mr-1"></i> Kembali
             </a>
-            <a href="{{ route('adm.product.category.edit', $data->uuid) }}" class="btn btn-sm btn-warning" data-toggle="tooltip" title="Edit Data Kategori">
-                <i class="far fa-edit mr-1"></i> Edit
-            </a>
+            @can('category-edit')
+                <a href="{{ route('adm.product.category.edit', $data->uuid) }}" class="btn btn-sm btn-warning" data-toggle="tooltip" title="Edit Data Kategori">
+                    <i class="far fa-edit mr-1"></i> Edit
+                </a>
+            @endcan
         </div>
     </div>
     <div class="card-body">

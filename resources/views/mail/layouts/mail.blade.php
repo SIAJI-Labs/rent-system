@@ -965,7 +965,7 @@
                                                                                 </tr>
                                                                                 <tr>
                                                                                     <td align="center" class="esd-block-text es-p10t es-p10b">
-                                                                                        <p>Mohon untuk tidak membalas email ini, dikarenakan email ini dibuat otomatis oleh sistem.<br>Jika ada pertanyaan, anda dapat menggunakan halaman kontak kami.<br></p>
+                                                                                        <p><small>Mohon untuk tidak membalas email ini, karena email ini dibuat secara otomatis oleh sistem.<br>Jika ada pertanyaan, anda dapat menggunakan halaman kontak kami.<br></small></p>
                                                                                     </td>
                                                                                 </tr>
                                                                             </tbody>

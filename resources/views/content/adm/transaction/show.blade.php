@@ -36,6 +36,9 @@
             <a href="{{ route('adm.transaction.index') }}" class="btn btn-sm btn-secondary" data-toggle="tooltip" title="Kembali ke Daftar Transaksi">
                 <i class="far fa-arrow-alt-circle-left mr-1"></i> Kembali
             </a>
+            <a href="{{ route('adm.transaction.invoice', $data->uuid) }}" class="btn btn-sm btn-info" data-toggle="tooltip" title="Lihat Invoice Transaksi" target="_blank">
+                <i class="fas fa-eye mr-1"></i> Invoice
+            </a>
             <a href="{{ route('adm.transaction.edit', $data->uuid) }}" class="btn btn-sm btn-warning" data-toggle="tooltip" title="Edit Data Transaksi">
                 <i class="far fa-edit mr-1"></i> Edit
             </a>
@@ -52,7 +55,7 @@
                 <div class="alert alert-warning" role="alert">
                     Transaksi mendekati batas periode sewa yang telah ditentukan!
                 </div>
-            @elseif(date("H:i:s") > date("H:i:s", strtotime($endDate)))
+            @elseif($currDate == date("Y-m-d", strtotime($endDate)) && date("H:i:s") > date("H:i:s", strtotime($endDate)))
                 <div class="alert alert-danger" role="alert">
                     Transaksi melebihi periode sewa yang telah ditentukan!
                 </div>
@@ -62,7 +65,7 @@
                 <div class="alert alert-primary" role="alert">
                     Transaksi mendekati awal periode sewa!
                 </div>
-            @elseif(date("H:i:s") > date("H:i:s", strtotime($startDate)))
+            @elseif(($currDate == date("Y-m-d", strtotime($startDate)) || $currDate >= date("Y-m-d", strtotime($startDate))) && date("H:i:s") > date("H:i:s", strtotime($startDate)))
                 <div class="alert alert-secondary" role="alert">
                     Transaksi belum diproses dan sudah melebihi awal periode sewa!
                 </div>
@@ -84,6 +87,30 @@
                 <th>Kostumer</th>
                 <td>
                     <a href="{{ route('adm.customer.show', $data->customer->uuid) }}">{{ $data->customer->name }}</a>
+                </td>
+            </tr>
+            <tr>
+                <th>Status</th>
+                <td>
+                    @php
+                        $colorBg = 'primary';
+                        $status = 'Booking';
+                        switch($data->status){
+                            case 'booking':
+                                $colorBg = 'warning';
+                                $status = 'Booking';
+                                break;
+                            case 'complete':
+                                $colorBg = 'success';
+                                $status = 'Selesai';
+                                break;
+                            case 'cancel':
+                                $colorBg = 'danger';
+                                $status = 'Dibatalkan';
+                                break;
+                        }    
+                    @endphp
+                    <span class="badge badge-{{ $colorBg }}">{{ ucwords($status) }}</span>
                 </td>
             </tr>
             <tr>
@@ -110,7 +137,7 @@
             </tr>
             <tr>
                 <th>Terbayarkan</th>
-                <td>{{ formatRupiah($data->paid) }} (<b><u>{{ (($data->amount - $data->discount) + $data->extra) == $data->paid ? 'Lunas' : 'Kurang: '.formatRupiah((($data->amount - $data->discount) + $data->extra) - $data->paid) }}</u></b>)</td>
+                <td>{{ formatRupiah($data->paid) }} (<b><u>{!! (($data->amount - $data->discount) + $data->extra) == $data->paid ? 'Lunas' : ($data->status == 'cancel' ? '<span class="badge badge-danger">Dibatalkan</span>' : ('Kurang: '.formatRupiah((($data->amount - $data->discount) + $data->extra) - $data->paid))) !!}</u></b>)</td>
             </tr>
         </table>
 

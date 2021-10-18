@@ -27,7 +27,7 @@ class SeederTransaction extends Seeder
         Transaction::truncate();
         Schema::enableForeignKeyConstraints();
 
-        $case = null;
+        $case = 2;
         switch($case){
             case 1:
                 $start_date = date("Y-m-d H:i:s", strtotime('2021-09-01 00:00:00'));
@@ -144,6 +144,8 @@ class SeederTransaction extends Seeder
                         }
 
                         \DB::transaction(function () use ($store, $invoice, $start_date, $end_date, $price, $transactionItemArr) {
+                            $statusAvailable = ['complete', 'cancel'];
+                            $status = $statusAvailable[array_rand($statusAvailable)];
                             // Generate Transaction
                             $transaction = new \App\Models\Transaction();
                             $transaction->user_id = 1;
@@ -156,10 +158,10 @@ class SeederTransaction extends Seeder
                             $transaction->must_end_date = date("Y-m-d H:i:s", strtotime($end_date));
                             $transaction->back_date = date("Y-m-d H:i:s", strtotime($end_date));
                             $transaction->amount = $price;
-                            $transaction->paid = rand(0, 100) * $price / 100;
+                            $transaction->paid = $status == 'complete' ? rand(0, 100) * $price / 100 : 0;
                             $transaction->charge = 0;
                             $transaction->extra = 0;
-                            $transaction->status = "complete";
+                            $transaction->status = $status;
                             $transaction->note = null;
                             $transaction->save();
 

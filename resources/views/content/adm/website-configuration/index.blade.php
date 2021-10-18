@@ -31,7 +31,10 @@
             if(!empty($title)){
                 $valtitle = $title->value;
             }
-            $description = old('description');
+            $valdesc = old('description');
+            if(!empty($desc)){
+                $valdesc = $desc->value;
+            }
         @endphp
 
         <div class="form-group">
@@ -47,7 +50,7 @@
         <div class="form-group">
             <label>Deskripsi</label>
 
-            <textarea class="form-control @error('description') is-invalid @enderror" id="input-description" name="description" placeholder="Deskripsi dari Website">{!! $description !!}</textarea>
+            <textarea class="form-control @error('description') is-invalid @enderror" id="input-description" name="description" placeholder="Deskripsi dari Website">{!! $valdesc !!}</textarea>
             @error('description')
                 <span class="invalid-feedback">{{ $message }}</span>
             @enderror
@@ -99,6 +102,14 @@
                 </div>
             </div>
         </div>
+
+        <div class="form-group">
+            <label>Syarat & Ketentuan</label>
+            <textarea class="ckeditor d-none @error('terms_condition') is-invalid @enderror" name="terms_condition" id="input-terms_condition" placeholder="Deskripsi untuk Syarat dan Ketentuan">{!! old('terms_condition') !!}</textarea>
+            @error('terms_condition')
+            <span class="invalid-feedback">{{ $message }}</span>
+            @enderror
+        </div>
     </div>
     <!-- /.card-body -->
     <div class="card-footer">
@@ -113,6 +124,8 @@
 @endsection
 
 @section('js_plugins')
+    {{-- CKEditor --}}
+    @include('layouts.adm.partials.plugins.ckeditor-js')
     {{-- Bootstrap Custom File Input --}}
     @include('layouts.adm.partials.plugins.bsfile-input-js')
 @endsection
@@ -122,5 +135,69 @@
     $(document).ready((e) => {
         bsCustomFileInput.init();
     });
+
+    // CKEditor
+    const watchdog = new CKSource.Watchdog();
+    window.watchdog = watchdog;
+    watchdog.setCreator( ( element, config ) => {
+        return CKSource.Editor
+            .create( element, config )
+            .then( editor => {
+                return editor;
+            });
+    });
+    watchdog.setDestructor( editor => {
+        return editor.destroy();
+    });
+    watchdog.on( 'error', handleError );
+    watchdog.create( document.querySelector( '.ckeditor' ), {	
+        height: 500,	
+        toolbar: {
+            items: [
+                'heading',
+                '|',
+                'bold',
+                'italic',
+                'underline',
+                'strikethrough',
+                'subscript',
+                'superscript',
+                '|',
+                'undo',
+                'redo',
+                'specialCharacters',
+                'link',
+                'bulletedList',
+                'numberedList',
+                '|',
+                'fontBackgroundColor',
+                'fontColor',
+                'highlight',
+                'fontFamily',
+                'fontSize',
+                '|',
+                'alignment',
+                'indent',
+                'outdent',
+                '|',
+                'blockQuote',
+                'horizontalLine',
+                'code',
+                'codeBlock',
+                '|',
+                'insertTable',
+                'removeFormat'
+            ]
+        },
+        language: 'en',
+        licenseKey: '',
+    })
+    .catch( handleError );
+    function handleError( error ) {
+        console.error( 'Oops, something gone wrong!' );
+        console.error( 'Please, report the following error in the https://github.com/ckeditor/ckeditor5 with the build id and the error stack trace:' );
+        console.warn( 'Build id: 8hx85als4qzm-4akfeg29g53u' );
+        console.error( error );
+    }
 </script>
 @endsection

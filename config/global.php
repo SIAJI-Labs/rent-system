@@ -79,7 +79,7 @@ return [
         ],
 
         // Transaction / Transaksi
-        'transaksi' => [
+        'transaction' => [
             'name' => 'Transaksi',
             'permission' => [
                 [

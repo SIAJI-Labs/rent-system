@@ -15,11 +15,15 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::group([
-    'as' => 'adm.'
+    'as' => 'adm.',
 ], function(){
-    Auth::routes([
-        'verify' => true
-    ]);
+    Route::group([
+        'namespace' => 'App\\Http\\Controllers\\Admin'
+    ], function(){
+        Auth::routes([
+            'verify' => true
+        ]);
+    });
 
     // Need Auth
     Route::group([
@@ -62,37 +66,47 @@ Route::group([
         });
 
         // Home / Dashboard
-        Route::get('/', 'HomeController')->name('index');
+        Route::get('/', \App\Http\Controllers\Admin\HomeController::class)->name('index');
 
+        // Product
         Route::group([
             'prefix' => 'product',
             'as' => 'product.'
         ], function(){
             // Product - Brand
-            Route::resource('brand', \BrandController::class);
+            Route::resource('brand', \App\Http\Controllers\Admin\BrandController::class);
             // Product - Category
-            Route::resource('category', \CategoryController::class);
+            Route::resource('category', \App\Http\Controllers\Admin\CategoryController::class);
 
             // Product - Detail
-            Route::resource('{product}/serial-number', \ProductDetailController::class)->only([
+            Route::resource('{product}/serial-number', \App\Http\Controllers\Admin\ProductDetailController::class)->only([
                 'create', 'store', 'edit', 'update'
             ]);
         });
-        Route::resource('product', \ProductController::class);
+        Route::resource('product', \App\Http\Controllers\Admin\ProductController::class);
 
         // Customer
-        Route::resource('customer', \CustomerController::class);
+        Route::resource('customer', \App\Http\Controllers\Admin\CustomerController::class);
         // Store
-        Route::resource('store', \StoreController::class);
+        Route::resource('store', \App\Http\Controllers\Admin\StoreController::class);
         // Staff Permission
-        Route::resource('staff/{id}/permission', \StaffPermissionController::class)->only([
+        Route::resource('staff/{id}/permission', \App\Http\Controllers\Admin\StaffPermissionController::class)->only([
             'index', 'store'
         ]);
         // Staff
-        Route::resource('staff', \StaffController::class);
+        Route::resource('staff', \App\Http\Controllers\Admin\StaffController::class);
 
+        // Transaction Invoice
+        Route::get('transaction/{id}/invoice', function($id){
+            $data = \App\Models\Transaction::where('uuid', $id)->firstOrFail();
+
+            $pdf = PDF::loadView('pdf.invoice', [
+                'data' => $data
+            ]);
+            return $pdf->stream('invoice.pdf');
+        })->name('transaction.invoice');
         // Transaction
-        Route::resource('transaction', \TransactionController::class);
+        Route::resource('transaction', \App\Http\Controllers\Admin\TransactionController::class);
 
         // Accounting
         Route::get('accounting/{year}/{month}/{date}', [\App\Http\Controllers\Admin\AccountingController::class, 'detail'])->name('accounting.detail');
@@ -100,13 +114,29 @@ Route::group([
         Route::get('accounting/{year}', [\App\Http\Controllers\Admin\AccountingController::class, 'monthly'])->name('accounting.monthly');
         Route::get('accounting', [\App\Http\Controllers\Admin\AccountingController::class, 'yearly'])->name('accounting.yearly');
 
+        // Social Media
+        Route::group([
+            'prefix' => 'social-media',
+            'as' => 'social-media.'
+        ], function(){
+            Route::resource('platform', \App\Http\Controllers\Admin\SocialMediaPlatformController::class);
+            Route::resource('account', \App\Http\Controllers\Admin\SocialMediaAccountController::class);
+
+            Route::get('/', function(){
+                return redirect()->route('adm.index')->with([
+                    'status' => 'warning',
+                    'message' => 'Mohon maaf, data tidak tersedia untuk saat ini'
+                ]);
+            });
+        });
+
         // Website Configuration
-        Route::resource('website-configuration', \WebsiteConfiguration::class)->only([
+        Route::resource('website-configuration', \App\Http\Controllers\Admin\WebsiteConfiguration::class)->only([
             'index', 'store'
         ]);
 
         // Profile
-        Route::resource('profile', \ProfileController::class)->only([
+        Route::resource('profile', \App\Http\Controllers\Admin\ProfileController::class)->only([
             'index', 'update'
         ]);
 

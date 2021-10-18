@@ -61,8 +61,10 @@ class WebsiteConfiguration extends Controller
     public function index()
     {
         $title = $this->websiteConfigurationModel->where('key', 'title')->first();
+        $desc = $this->websiteConfigurationModel->where('key', 'description')->first();
         return view('content.adm.website-configuration.index', [
-            'title' => $title
+            'title' => $title,
+            'desc' => $desc,
         ]);
     }
 
@@ -117,6 +119,8 @@ class WebsiteConfiguration extends Controller
                 ], [
                     'value' => $request->description
                 ]);
+            } else {
+                $description = $this->websiteConfigurationModel->where('key', 'description')->delete();
             }
             // Website Favicon
             if($request->has('favicon') && $request->favicon != ""){

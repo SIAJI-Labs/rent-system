@@ -312,7 +312,7 @@
                         </div>
 
                         <hr/>
-                        <button type="button" class="btn btn-sm btn-primary" id="btn_product-add_more" {{ old('store_id') ? '' : 'disabled' }}><i class="fas fa-plus mr-2"></i>Tambah lainnya</button>
+                        <button type="button" class="btn btn-sm btn-primary" id="btn_product-add_more" {{ old('store_id') ? '' : (\Auth::guard('admin')->check() && !empty(\Auth::guard('admin')->user()->store_id) ? '' : 'disabled') }}><i class="fas fa-plus mr-2"></i>Tambah lainnya</button>
                     </div>
                 </div>
             </div>
@@ -321,7 +321,7 @@
         <div class="row justify-content-end">
             <div class="col-12 col-lg-6">
                 <div class="form-group row align-items-center">
-                    <label class="col-sm-4 col-form-label">Jumlah Biaya</label>
+                    <label class="col-sm-4 col-form-label">Jumlah Biaya Harian</label>
                     <div class="col-sm-8">
                         <div class="input-group">
                             <div class="input-group-prepend">
@@ -333,7 +333,7 @@
                 </div>
 
                 <div class="form-group row align-items-center">
-                    <label class="col-sm-4 col-form-label">Jumlah Diskon</label>
+                    <label class="col-sm-4 col-form-label">Jumlah Diskon Harian</label>
                     <div class="col-sm-8">
                         <div class="input-group">
                             <div class="input-group-prepend">
@@ -573,6 +573,7 @@
                     var items = $.map(data.data, function(obj){
                         obj.id = obj.id;
                         obj.text = obj.serial_number;
+                        obj.disabled = obj.is_available ? false : true;
 
                         return obj;
                     });

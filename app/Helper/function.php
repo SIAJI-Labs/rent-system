@@ -132,8 +132,8 @@ function dynamicAuditColumn($className, $columnName, $oldValue, $newValue)
             // Transaction Audit
             switch($columnName){
                 case 'user_id':
-                    $oldValue = \App\Models\User::find($oldValue) ? \App\Models\User::find($oldValue)->name : null;
-                    $newValue = \App\Models\User::find($newValue) ? \App\Models\User::find($newValue)->name : null;
+                    $oldValue = \App\Models\Admin::find($oldValue) ? \App\Models\Admin::find($oldValue)->name : null;
+                    $newValue = \App\Models\Admin::find($newValue) ? \App\Models\Admin::find($newValue)->name : null;
                     $column = 'Kasir';
                     break;
                 case 'store_id':

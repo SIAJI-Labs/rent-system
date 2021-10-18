@@ -1,0 +1,1 @@
+{"version":3,"file":"assets/css/tailwind.css","mappings":"AAAA;;AAAA,k6EACA,6TACA,0mLCFA,yBDEA,iHCFA,yBDEA,6CCFA,0BDEA,4GCFA,0BDEA,sC","sources":["webpack:///./resources/assets/tailwind.scss","webpack:///<no source>"],"sourcesContent":["@tailwind base;\n@tailwind components;\n@tailwind utilities;"],"names":[],"sourceRoot":""}

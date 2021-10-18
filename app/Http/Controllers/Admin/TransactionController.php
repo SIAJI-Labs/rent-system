@@ -383,6 +383,7 @@ class TransactionController extends Controller
                             });
                     })
                     ->first();
+
                 if(!empty($checkSchedule)){
                     // Schedule Exists
                     $errors[] = [
@@ -402,8 +403,6 @@ class TransactionController extends Controller
                     $transactionItem->discount = $product['discount'];
                     $transactionItem->note = $product['note'];
                     $transactionItem->save();
-
-                    $existsOnDb[] = $transactionItem->id;
                 } else {
                     $transactionItem = $this->transactionItemModel->create([
                         'transaction_id' => $data->id,
@@ -415,6 +414,7 @@ class TransactionController extends Controller
                     ]);
                 }
 
+                $existsOnDb[] = $transactionItem->id;
                 // Get Last Audit on Transaction Item
                 if($transactionItem->wasChanged()){
                     $lastAuditItem = $transactionItem->audits()->get()->last();
@@ -426,6 +426,7 @@ class TransactionController extends Controller
                 $sum_price += $product['price'];
                 $sum_discount += $product['discount'];
             }
+
             // Validate if there's some error
             if(!empty($errors)){
                 $temp_error = [];
@@ -433,6 +434,7 @@ class TransactionController extends Controller
                     $temp_error[$error['type'].'.'.$error['key'].'.'.$error['sub_type']] = ['Ada jadwal yang bermasalah, mohon periksa kembali jadwal sewa untuk produk '.$error['product'].' dengan SN '.$error['product_sn']];
                 }
                 $errorException = \Illuminate\Validation\ValidationException::withMessages($temp_error);
+
                 throw $errorException;
             }
 
@@ -442,7 +444,6 @@ class TransactionController extends Controller
             $data->amount = ($sum_price * $request->periode);
             $data->discount = ($sum_discount * $request->periode);
             $data->paid = $request->paid;
-            // $data->charge = $request->store_id;
             $data->extra = $request->extra_amount;
             $data->status = $request->status;
             $data->note = $request->note;
@@ -498,7 +499,7 @@ class TransactionController extends Controller
         return datatables()
             ->of($data->with(['customer' => function($q){
                 return $q->select('id', 'uuid', 'name');
-            }]))
+            }, 'store']))
             ->orderColumn('invoice', function ($query, $order) {
                 $query->orderBy('created_at', $order);
             })

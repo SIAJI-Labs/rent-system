@@ -101,7 +101,10 @@ class StoreController extends Controller
      */
     public function show($id)
     {
-        //
+        $data = $this->storeModel->where('uuid', $id)->firstOrFail();
+        return view('content.adm.store.show', [
+            'data' => $data
+        ]);
     }
 
     /**

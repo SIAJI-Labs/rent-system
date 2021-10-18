@@ -149,6 +149,7 @@
             r[a.name]['config'].push(a.backgroundColor);
             return r;
         }, Object.create(null));
+        console.log("Temp", tempDataset)
 
         // Remap Dataset
         for (const [key, value] of Object.entries(tempDataset)) {

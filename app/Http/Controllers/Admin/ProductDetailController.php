@@ -165,6 +165,8 @@ class ProductDetailController extends Controller
 
         if($request->has('store_id') && $request->store_id != ''){
             $data->where('store_id', $request->store_id);
+        } else if(\Auth::guard('admin')->check() && !empty(\Auth::guard('admin')->user()->store_id)){
+            $data->where('store_id', \Auth::guard('admin')->user()->store_id);
         }
 
         return datatables()
@@ -194,60 +196,6 @@ class ProductDetailController extends Controller
         if($request->has('store_id') && $request->store_id != ''){
             $data = $data->where('store_id', $request->store_id);
         }
-        if($request->has('store_id') && $request->store_id != '' && $request->has('daterange') && $request->daterange != ''){
-            $data = $data->whereDoesntHave('transactionItem', function($q) use ($request){                
-                return $q->whereHas('transaction', function($q) use ($request){
-                    if($request->has('transaction_id') && $request->transaction_id != ''){
-                        $q->where('transaction_id', '!=', $request->transaction_id);
-                    }
-                    
-                    return $q->where('store_id', $request->store_id)
-                        ->whereIn('status', ['process', 'booking'])
-                        ->where(function($q) use ($request){
-                            $startDate = date("Y-m-d H:i:00", strtotime(explode('-', $request->daterange)[0]));
-                            $endDate = date("Y-m-d H:i:00", strtotime(explode('-', $request->daterange)[1]));
-
-                            return $q->where(function($q) use ($startDate, $endDate){
-                                /**
-                                 * Start Date: 2021-09-14
-                                 * End Date: 2021-09-16
-                                 * 
-                                 * Rent Case 2021-09-15 ~ 2021-09-17
-                                 */
-                                return $q->where('start_date', '>=', $startDate)
-                                    ->where('start_date', '<=', $endDate);
-                            })->orWhere(function($q) use ($startDate, $endDate){
-                                /**
-                                 * Start Date: 2021-09-14
-                                 * End Date: 2021-09-16
-                                 * 
-                                 * Rent Case 2021-09-13 ~ 2021-09-15
-                                 */
-                                return $q->where('end_date', '>=', $startDate)
-                                    ->where('end_date', '<=', $endDate);
-                            })->orWhere(function($q) use ($startDate, $endDate){
-                                /**
-                                 * Start Date: 2021-09-12
-                                 * End Date: 2021-09-16
-                                 * 
-                                 * Rent Case 2021-09-13 ~ 2021-09-15
-                                 */
-                                return $q->where('start_date', '<=', $startDate)
-                                    ->where('end_date', '>=', $endDate);
-                            })->orWhere(function($q) use ($startDate, $endDate){
-                                /**
-                                 * Start Date: 2021-09-14
-                                 * End Date: 2021-09-14
-                                 * 
-                                 * Rent Case 2021-09-13 ~ 2021-09-15
-                                 */
-                                return $q->where('start_date', '>=', $startDate)
-                                    ->where('end_date', '<=', $endDate);
-                            });
-                        });
-                });
-            });
-        }
 
         if($request->has('page')){
             // If request has page parameter, add paginate to eloquent
@@ -259,7 +207,68 @@ class ProductDetailController extends Controller
 
         return response()->json([
             'message' => 'Data Fetched',
-            'data' => $data->get()->each(function($data){
+            'data' => $data->get()->each(function($data) use ($request){
+                $availability = true;
+                if($request->has('store_id') && $request->store_id != '' && $request->has('daterange') && $request->daterange != ''){
+                    $checkAvailability = \App\Models\TransactionItem::where('product_detail_id', $data->id)
+                        ->where('product_id', $data->product_id)
+                        ->whereHas('transaction', function($q) use ($request){
+                            if($request->has('transaction_id') && $request->transaction_id != ''){
+                                $q->where('transaction_id', '!=', $request->transaction_id);
+                            }
+                            
+                            return $q->where('store_id', $request->store_id)
+                                ->whereIn('status', ['process', 'booking'])
+                                ->where(function($q) use ($request){
+                                    $startDate = date("Y-m-d H:i:00", strtotime(explode('-', $request->daterange)[0]));
+                                    $endDate = date("Y-m-d H:i:00", strtotime(explode('-', $request->daterange)[1]));
+        
+                                    return $q->where(function($q) use ($startDate, $endDate){
+                                        /**
+                                         * Start Date: 2021-09-14
+                                         * End Date: 2021-09-16
+                                         * 
+                                         * Rent Case 2021-09-15 ~ 2021-09-17
+                                         */
+                                        return $q->where('start_date', '>=', $startDate)
+                                            ->where('start_date', '<=', $endDate);
+                                    })->orWhere(function($q) use ($startDate, $endDate){
+                                        /**
+                                         * Start Date: 2021-09-14
+                                         * End Date: 2021-09-16
+                                         * 
+                                         * Rent Case 2021-09-13 ~ 2021-09-15
+                                         */
+                                        return $q->where('end_date', '>=', $startDate)
+                                            ->where('end_date', '<=', $endDate);
+                                    })->orWhere(function($q) use ($startDate, $endDate){
+                                        /**
+                                         * Start Date: 2021-09-12
+                                         * End Date: 2021-09-16
+                                         * 
+                                         * Rent Case 2021-09-13 ~ 2021-09-15
+                                         */
+                                        return $q->where('start_date', '<=', $startDate)
+                                            ->where('end_date', '>=', $endDate);
+                                    })->orWhere(function($q) use ($startDate, $endDate){
+                                        /**
+                                         * Start Date: 2021-09-14
+                                         * End Date: 2021-09-14
+                                         * 
+                                         * Rent Case 2021-09-13 ~ 2021-09-15
+                                         */
+                                        return $q->where('start_date', '>=', $startDate)
+                                            ->where('end_date', '<=', $endDate);
+                                    });
+                                });
+                        })->get();
+
+                    if(count($checkAvailability) > 0){
+                        $availability = false;
+                    }
+                }
+
+                $data->is_available = $availability;
                 $data->makeVisible('id');
             }),
             'extra_data' => [
