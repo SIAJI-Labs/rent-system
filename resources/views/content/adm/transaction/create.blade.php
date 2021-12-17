@@ -757,7 +757,9 @@
                 data: function (params) {
                     var query = {
                         search: params.term,
-                        page: params.page || 1
+                        page: params.page || 1,
+                        identity_number: true,
+                        verification: "{{ appVerificationKey(\Session::get('_token')) }}"
                     }
 
                     // Query parameters will be ?search=[term]&type=public
@@ -766,7 +768,7 @@
                 processResults: function (data, params) {
                     var items = $.map(data.data, function(obj){
                         obj.id = obj.id;
-                        obj.text = obj.name;
+                        obj.text = `${obj.name} / ${obj.identity_number}`;
 
                         return obj;
                     });

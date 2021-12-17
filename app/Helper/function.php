@@ -267,7 +267,10 @@ function convertHexToRgb($hex, $alpha = null){
     return implode(", ", $rgb);
 }
 
-// Indonesian Format (Month)
+/**
+ * Indonesian Format (Month)
+ * 
+ */
 function formatBulan($angka){
     $name = '';
     switch($angka){
@@ -310,4 +313,24 @@ function formatBulan($angka){
     }
 
     return $name;
+}
+
+/**
+ * Generate App Verification Key
+ * 
+ */
+function appVerificationKey($session_id)
+{
+    $key = env('APP_KEY').'/'.$session_id;
+    return bcrypt($key);
+}
+
+/**
+ * Check App Verification Key
+ * 
+ */
+function checkAppVerificationKey($hashed)
+{
+    $value = env('APP_KEY').'/'.\Session::get('_token');
+    return \Hash::check($value, $hashed);
 }

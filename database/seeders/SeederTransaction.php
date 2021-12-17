@@ -96,11 +96,11 @@ class SeederTransaction extends Seeder
                 break;
             case 2:
                 $invoiceNumber = 1;
-                $start_date = date("Y-m-d H:i:s", strtotime("2020-01-01 00:00:00"));
+                $start_date = date("Y-m-d H:i:s", strtotime("2015-01-01 00:00:00"));
 
                 do {
                     // Configuration (Time)
-                    $transactionPerDay = rand(0, 5);
+                    $transactionPerDay = rand(0, 50);
                     $availableTime = ['days', 'hours'];
                     $nextTime = $availableTime[array_rand($availableTime)];
                     // Get Next Time

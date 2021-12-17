@@ -40,7 +40,7 @@
             <label>Nama</label>
             <input type="text" class="form-control @error('name') is-invalid @enderror" placeholder="Nama Toko" name="name" id="input-name" value="{{ old('name') }}" required>
             @error('name')
-            <span class="text-invalid">{{ $message }}</span>
+            <span class="invalid-feedback">{{ $message }}</span>
             @enderror
         </div>
 
@@ -73,7 +73,7 @@
             <label>Prefix Invoice</label>
             <input type="text" class="form-control @error('invoice_prefix') is-invalid @enderror" placeholder="Prefix Invoice" name="invoice_prefix" id="input-invoice_prefix" value="{{ old('invoice_prefix') }}" required>
             @error('invoice_prefix')
-            <span class="text-invalid">{{ $message }}</span>
+            <span class="invalid-feedback">{{ $message }}</span>
             @enderror
             
             <small class="text-muted d-block">*Karakter diijinkan: A-Z, Maksimal 6 karakter</small>

@@ -412,8 +412,14 @@ class CustomerController extends Controller
 
         return response()->json([
             'message' => 'Data Fetched',
-            'data' => $data->get()->each(function($data){
+            'data' => $data->get()->each(function($data) use ($request){
                 $data->makeVisible('id');
+
+                if($request->has('identity_number') && $request->has('verification') && checkAppVerificationKey($request->verification)){
+                    $data->makeVisible('identity_number');
+                    $data->verification = \Session::get('_token');
+                }
+
             }),
             'extra_data' => [
                 'last_page' => $last_page,
